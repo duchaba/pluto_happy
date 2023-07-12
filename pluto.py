@@ -1,10 +1,12 @@
 
+# manual copy pluto file here
+
 ## required lib, required "pip install"
 # import transformers
 # import accelerate
-import openai
-import llama_index
-import torch
+# import openai
+# import llama_index
+# import torch
 import cryptography
 import cryptography.fernet
 ## interface libs, required "pip install"
@@ -22,14 +24,16 @@ import sys
 import psutil
 import threading
 import socket
-# import PIL
-# import pandas
+import PIL
+import pandas
 import matplotlib
-class HFace_Pluto(object):
+
+# define class Pluto_Happy
+class Pluto_Happy(object):
   #
   # initialize the object
   def __init__(self, name="Pluto",*args, **kwargs):
-    super(HFace_Pluto, self).__init__(*args, **kwargs)
+    super(Pluto_Happy, self).__init__(*args, **kwargs)
     self.author = "Duc Haba"
     self.name = name
     self._ph()
@@ -39,27 +43,8 @@ class HFace_Pluto(object):
     self._ph()
     #
     # define class var for stable division
-    self._device = 'cuda'
-    self._steps = [3,8,21,55,89,144]
-    self._guidances = [1.1,3.0,5.0,8.0,13.0,21.0]
-    self._xkeyfile = '.xoxo'
-    self._models = []
-    self._seed = 667 # sum of walnut in ascii (or Angle 667)
-    self._width = 512
-    self._height = 512
-    self._step = 50
-    self._guidances = 7.5
-    self._llama_query_engine = None
-    self._llama_index_doc = None
-    self._llama_indexes_dict = None
-    self._llama_query_engines_dict = None
-    #self._generator = torch.Generator(device='cuda')
-    self.pipes = []
-    self.prompts = []
-    self.images = []
-    self.seeds = []
-    self.fname_id = 0
-    self.dname_img = "img_colab/"
+    self._fname_id = 0
+    self._dname_img = "img_colab/"
     self._huggingface_key="gAAAAABkduT-XeiYtD41bzjLtwsLCe9y1FbHH6wZkOZwvLwCrgmOtNsFUPWVqMVG8MumazFhiUZy91mWEnLDLCFw3eKNWtOboIyON6yu4lctn6RCQ4Y9nJvx8wPyOnkzt7dm5OISgFcm"
     self._gpt_key="'gAAAAABkgiYGQY8ef5y192LpNgrAAZVCP3bo2za9iWSZzkyOJtc6wykLwGjFjxKFpsNryMgEhCATJSonslooNSBJFM3OcnVBz4jj_lyXPQABOCsOWqZm6W9nrZYTZkJ0uWAAGJV2B8uzQ13QZgI7VCZ12j8Q7WfrIg=='"
     self._fkey="=cvsOPRcWD6JONmdr4Sh6-PqF6nT1InYh965mI8f_sef"
@@ -214,11 +199,11 @@ class HFace_Pluto(object):
     s = ''
     # print(f"{'torch: 2.0.1':<25} Actual: {torch.__version__}")
     # print(f"{'transformers: 4.29.2':<25} Actual: {transformers.__version__}")
-    s += f"{'openai: 0.27.7,':<28} Actual: {openai.__version__}\n"
+    # s += f"{'openai: 0.27.7,':<28} Actual: {openai.__version__}\n"
     s += f"{'huggingface_hub: 0.14.1,':<28} Actual: {huggingface_hub.__version__}\n"
     s += f"{'gradio: 3.32.0,':<28} Actual: {gradio.__version__}\n"
     s += f"{'cryptography: 41.0.1,':<28} Actual: {cryptography.__version__}\n"
-    s += f"{'llama_index: 0.6.21.post1,':<28} Actual: {llama_index.__version__}\n"
+    # s += f"{'llama_index: 0.6.21.post1,':<28} Actual: {llama_index.__version__}\n"
     return s
   #
   def _fetch_host_ip(self):
@@ -228,29 +213,6 @@ class HFace_Pluto(object):
     s += f"Hostname: {hostname}\n"
     s += f"IP Address: {ip_address}\n"
     return s
-  #
-  def _setup_openai(self,key=None):
-    if (key is None):
-      key = self._decrypt_it(self._gpt_key)
-    #
-    openai.api_key = key
-    os.environ["OPENAI_API_KEY"] = key
-    return
-  #
-  def _fetch_index_files(self,llama_ix):
-    res = []
-    x = llama_ix.ref_doc_info
-    for val in x.values():
-      jdata = json.loads(val.to_json())
-      try:
-        fname = jdata['extra_info']['file_name']
-        res.append(fname)
-      except:
-        fname = jdata['metadata']['file_name']
-        res.append(fname)
-    # remove dublication name
-    res = list(set(res))
-    return res
   #
   def _fetch_dir_name(self,directory):
     dname=[]
@@ -272,4 +234,3 @@ def add_method(cls):
     setattr(cls, func.__name__, wrapper)
     return func # returning func means func can still be used normally
   return decorator
-#
