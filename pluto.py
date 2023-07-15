@@ -36,10 +36,10 @@ import pynvml
 class Pluto_Happy(object):
   """
   The Pluto projects starts with fun AI hackings and become a part of my
-  first book "Data Augmentation with Python" with Packt Publishing. 
+  first book "Data Augmentation with Python" with Packt Publishing.
 
   In particular, Pluto_Happy is a clean and lite kernel of a simple class,
-  and using @add_module decoractor to add in specific methods to be a new class, 
+  and using @add_module decoractor to add in specific methods to be a new class,
   such as Pluto_HFace with a lot more function on HuggingFace, LLM and Transformers.
 
   Args:
@@ -63,9 +63,9 @@ class Pluto_Happy(object):
     # define class var for stable division
     self._huggingface_crkey="gAAAAABkduT-XeiYtD41bzjLtwsLCe9y1FbHH6wZkOZwvLwCrgmOtNsFUPWVqMVG8MumazFhiUZy91mWEnLDLCFw3eKNWtOboIyON6yu4lctn6RCQ4Y9nJvx8wPyOnkzt7dm5OISgFcm"
     self._gpt_crkey="'gAAAAABkgiYGQY8ef5y192LpNgrAAZVCP3bo2za9iWSZzkyOJtc6wykLwGjFjxKFpsNryMgEhCATJSonslooNSBJFM3OcnVBz4jj_lyXPQABOCsOWqZm6W9nrZYTZkJ0uWAAGJV2B8uzQ13QZgI7VCZ12j8Q7WfrIg=='"
-    self._fkey="=cvsOPRcWD6JONmdr4Sh6-PqF6nT1InYh965mI8f_sef"
-    self._github_crkey=""
-    self._kaggle_crkey=""
+    self._fkey="your_key_goes_here"
+    self._github_crkey="gAAAAABksjLYjRoFxZDDW5RgBN_uvm6pqDP128S2qOEfv9PgVL8fwdtXzWvCeMHwnGcibAky5cGs3XNxMH4VgbaPBA3I_CPRp3bRK3TMNU4HGRKxbdMnJ7U04IkVSdcMn8o86z3yhcSn"
+    self._kaggle_crkey="gAAAAABksjOOU2a-BtZ4NV8BkmFhBzqjix7XL9DsKPrua7OaMc7t8QKGw_3Ut5wyv4NL4FHX74JFEEbmpVbsPINN7LcqLtewuyF0o0P9461PY9qLBAGy6Wr7PyE0qwDogQoDGJ1UJgPn"
     #
     self.fname_id = 0
     self.dname_img = "img_colab/"
@@ -79,6 +79,7 @@ class Pluto_Happy(object):
     self.color_warning = '#ff7518' #orange
     self.color_danger = '#ff0039' #red
     self.color_mid_gray = '#495057'
+    self._xkeyfile = '.xoxo'
     return
   #
   # pretty print output name-value line
@@ -109,7 +110,7 @@ class Pluto_Happy(object):
   def _ph(self,is_print=True):
     """
     Pretty prints the header or footer lines.
- 
+
     Args:
       is_print (bool): whether to print the header or footer lines to console or return a str.
 
@@ -132,7 +133,7 @@ class Pluto_Happy(object):
     local_dir="/content/"):
     """
     Given a list of huggingface file names, download them from the provided huggingface space.
-    
+
     Args:
         hf_names: (list) list of huggingface file names to download
         hf_space: (str) huggingface space to download from.
@@ -146,7 +147,7 @@ class Pluto_Happy(object):
     try:
       for f in hf_names:
         lo = local_dir + f
-        huggingface_hub.hf_hub_download(repo_id=hf_space, 
+        huggingface_hub.hf_hub_download(repo_id=hf_space,
           filename=f,
           use_auth_token=True,
           repo_type=huggingface_hub.REPO_TYPE_SPACE,
@@ -156,7 +157,7 @@ class Pluto_Happy(object):
       status = False
     return status
   #
-  # push files to huggingface 
+  # push files to huggingface
   def push_hface_files(self,
     hf_names,
     hf_space="duchaba/skin_cancer_diagnose",
@@ -193,9 +194,9 @@ class Pluto_Happy(object):
     return status
   #
   # push the folder to huggingface space
-  def push_hface_folder(self, 
-    hf_folder, 
-    hf_space_id, 
+  def push_hface_folder(self,
+    hf_folder,
+    hf_space_id,
     hf_dest_folder=None):
 
     """
@@ -211,7 +212,7 @@ class Pluto_Happy(object):
     Returns:
       status: (bool) True if the folder is pushed successfully, otherwise False.
     """
- 
+
     status = True
     try:
       api = huggingface_hub.HfApi()
@@ -253,7 +254,7 @@ class Pluto_Happy(object):
     Args:
       key: (str, optional)  If key is set, this key will be used to log in,
         otherwise the key will be decrypted from the key file.
-    
+
     Returns:
         None
     """
@@ -391,7 +392,7 @@ class Pluto_Happy(object):
 
     """
     This function fetches the crypto key from the file or from the
-    variable created previously in the class. 
+    variable created previously in the class.
     Args:
         has_new_key (bool):
             is_generate flag to indicate whether the key should be
@@ -400,6 +401,9 @@ class Pluto_Happy(object):
         s (str):
             string value containing the crypto key.
     """
+    if pluto._fkey == 'your_key_goes_here':
+      raise Exception('Cryto Key is not correct!')
+    #
     s=self._fkey[::-1]
     if (has_new_key):
       s=open(self._xkeyfile, "rb").read()
@@ -522,7 +526,11 @@ class Pluto_Happy(object):
   def write_file(self,fname, in_data):
 
     """
-    Write a file to local or cloud diskspace.
+    Write a file to local or cloud diskspace or append to it if it already exists.
+
+    Args:
+        fname (str): The name of the file to write.
+        in_data (list): The
 
     This is a utility function that writes a file to disk.
     The file name and text to write are passed in as arguments.
@@ -535,7 +543,11 @@ class Pluto_Happy(object):
     Returns:
         None
     """
-    f = open(fname, "w")
+
+    if os.path.isfile(fname):
+      f = open(fname, "a")
+    else:
+      f = open(fname, "w")
     f.writelines("\n".join(in_data))
     f.close()
     return
