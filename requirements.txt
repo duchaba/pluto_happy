@@ -2,3 +2,4 @@ cryptography
 huggingface_hub
 flopth
 pynvml
+py-cpuinfo
