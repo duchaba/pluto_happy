@@ -32,6 +32,8 @@ import importlib.metadata
 import types
 import cpuinfo
 import pynvml
+import pathlib
+import re
 # define class Pluto_Happy
 class Pluto_Happy(object):
   """
@@ -364,7 +366,7 @@ class Pluto_Happy(object):
     return s
   #
   # fetch files name
-  def fetch_file_names(directory, file_extension=None):
+  def fetch_file_names(self,directory, file_extension=None):
     """
     This function gets all the filenames with a given extension.
     Args:
