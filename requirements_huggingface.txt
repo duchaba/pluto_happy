@@ -1,0 +1,9 @@
+cryptography
+huggingface_hub
+pynvml
+py-cpuinfo
+gradio
+transformers
+diffusers
+torch
+accelerate

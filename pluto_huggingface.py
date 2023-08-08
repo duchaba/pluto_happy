@@ -716,3 +716,212 @@ def add_method(cls):
     setattr(cls, func.__name__, wrapper)
     return func # returning func means func can still be used normally
   return decorator
+
+# prompt: use gradio to load model stabilityai/stable-diffusion-xl-base-1.0
+# grade: F // Not even close to working code. It is because the "load()" function is 
+# introduced about a year ago (too recent?)
+# 
+# 
+import gradio
+import transformers
+import torch
+import diffusers
+
+#
+@add_method(Pluto_Happy)
+def fetch_auto_load(self, model='stabilityai/stable-diffusion-xl-base-1.0'):
+  model= f'models/{model}'
+  title='Pluto: Latest Image Generation'
+  desc='This space Pluto Sandbox.'
+  examples=['Flowers in Spring', 'Bird in Summer', 'beautiful woman close up on face in autumn.', 'Old man close up on face in winter.']
+  arti = f'Note: The underline model is: {model}'
+  gradio.load(model,
+    title=title,
+    description=desc,
+    examples=examples,
+    article=arti).launch(debug=True)
+  return
+
+# prompt: write a function using StableDiffusionXLPipeline and huggingface stabilityai/stable-diffusion-xl-base-1.0 to display text to image with documentation
+# grade: F // Nothing useable after 3 tries
+#
+# after I wrote the function, I asked it to write the documentation
+#
+# prompt: write python inline documentation for the following function: fetch_image_model
+# grade: A- // it does not said I stored the pipe in self.pipe
+
+@add_method(Pluto_Happy)
+def fetch_image_model(self, model):
+
+  """
+  Description:
+
+  This function is used to load a pre-trained Stable Diffusion model.
+
+  Args:
+
+    model (str):
+      The name of the model to load.
+
+  Returns:
+
+    None (the pipe is safed in self.pipe)
+
+  """
+
+  self.device = 'cuda'
+  pipe = diffusers.StableDiffusionXLPipeline.from_pretrained(
+    model, 
+    torch_dtype=torch.float16, 
+    use_safetensors=True, 
+    variant="fp16")
+  pipe.to(self.device)
+  self.pipe = pipe
+  self.model = model
+  return
+
+# prompt: write a function using torch.generator and StableDiffusionXLPipeline for image with documentation
+# grade: C+ // tecnially it works with one error, but it is not what I am looking for.
+# so I rewrite it.
+#
+# and I asked it to document my functin for me.
+#
+# prompt: write python inline documentation for the following function: draw_me
+# grade: A // it writes good doc.
+
+@add_method(Pluto_Happy)
+def draw_me(self,
+  prompt, 
+  negative_prompt, 
+  height, 
+  width, 
+  steps, 
+  seed):
+
+  """
+  Generate image using the prompt using Stable Diffusion.
+
+  Args:
+    prompt (str): Prompt to generate image from. e.g.: "image of a cat."
+    negative_prompt (str): Negative prompt to generate image from. Default: "incomplete".
+    height (int): The height of the image to generate. Default: 768.
+    width (int): The width of the image to generate. Default: 768.
+    steps (int): Number of steps to run the diffusion model for. Default: 40.
+    seed (int): Seed for the random number generator. Default: -1, any random seed
+
+  Returns:
+    PIL image.
+  """
+
+  # Initialize the diffusion model.
+  # self.fetch_image_model(model=model)
+
+  # Generate the image.
+  gen = torch.Generator(device=self.device).manual_seed(seed)
+  ximage = 1
+  result = self.pipe(prompt,
+    negative_prompt=negative_prompt,
+    num_inference_steps=steps,
+    height=height,
+    width=width,
+    num_images_per_prompt=1,
+    generator=gen,
+    output_type="pil",
+    ).images
+  torch.cuda.empty_cache()
+  return result[0]
+
+# prompt: write a function to define and launch the gradio interface with text for prompt and negative prompt and slider for steps, height, width, num image per prompt and a generator and output is an image
+# grade: F // after a few tries with different prompt, nothing work. So I wrote it manually.
+#
+# prompt for doc
+# prompt: write python inline documentation for the following function: 
+# grade: A // it writes good doc.
+
+@add_method(Pluto_Happy)
+def fetch_gradio_interface(self, predict_fn):
+
+  """
+  Description:
+
+  This function is used to create a Gradio interface based on the `predict_fn` function.
+
+  Args:
+
+    predict_fn (function):
+      The function that will be used to generate the image.
+
+  Returns:
+
+    gradio.Interface:
+      The Gradio interface.
+
+  """
+
+  inp=[
+    gradio.Textbox(label='Ask me what image do you want to draw.', 
+      value='A picture of a beautiful model on Hawaii beach with super realistic detail, in 4K clarity, soft background focus, and vibrant colors.'),
+    gradio.Textbox(label='What do you do NOT want in the picture?', value='dirty, pornographic'),
+    gradio.Slider(512, 1024, 768, step=128, label='Height'),
+    gradio.Slider(512, 1024, 768, step=128, label='Width'),
+    gradio.Slider(5, maximum=80, value=40, step=5, label='Number of Iterations'),
+    gradio.Slider(minimum=1, step=1, maximum=1000000, randomize=True, label='Seed')]
+  out=['image']
+  title="Stable Diffusion XL model"
+  desc='It is hacking time.'
+  arti=f'This model is the {self.model}'
+  inface = gradio.Interface(fn=predict_fn,
+    inputs=inp,
+    outputs=out,
+    title=title,
+    description=desc)
+  return inface
+
+# prompt: write the function from the above print dancer with documentation
+# Note: 100% correct, but I did ask it write a function for printing a dancer is ascii art, but it could not do it.
+# Note 2: I have to write the code with the comment "# print dancer" first.
+
+@add_method(Pluto_Happy)
+def dance_it(self):
+
+  """
+  This function prints a dancer
+
+  Args:
+    None
+
+  Returns:
+    None, just a print out
+  """
+
+  print('|-----------------------------------------------------------------------|')
+  print('|    o   \ o /  _ o         __|    \ /     |__        o _  \ o /   o    |')
+  print('|   /|\    |     /\   ___\o   \o    |    o/    o/__   /\     |    /|\   |')
+  print('|   / \   / \   | \  /)  |    ( \  /o\  / )    |  (\  / |   / \   / \   |')
+  print('|--------------------------------Bye_Bye--------------------------------|')
+  return
+#
+
+# prompt: define a function for print ascii art for the word happy
+# Note: Failed. it could not do it. so I use https://patorjk.com with efti wall
+
+@add_method(Pluto_Happy)
+def print_monkey(self):
+  """
+  This function prints the ascii art for the word "happy".
+
+  Args:
+    None
+
+  Returns:
+    None
+  """
+
+  print("""
+ooO----Monkey_See------------------------------------------------Monkey_Do---Ooo
+                 |     |    #                 ##                #    ._____.
+     ***         |.===.|    #=ooO=========Ooo=##=ooO========Ooo=#    | -_- |
+    (o o)        {}o o{}    # //   (o o)  //  ##  //  (o o) //  #    ([o o])
+ooO--(_)--Ooo-ooO--(_)--Ooo---------(_)----------------(_)--------ooO--(_)---Ooo
+  """)
+  return
