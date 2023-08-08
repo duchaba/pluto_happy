@@ -9,7 +9,7 @@
 import torch
 import cryptography
 import cryptography.fernet
-from flopth import flopth
+#from flopth import flopth
 ## interface libs, required "pip install"
 # import gradio
 import huggingface_hub
@@ -554,55 +554,55 @@ class Pluto_Happy(object):
     f.close()
     return
   #
-  # fetch flops info
-  def fetch_info_flops(self,model, input_shape=(1, 3, 224, 224), device="cpu", max_epoch=1):
+  # # fetch flops info
+  # def fetch_info_flops(self,model, input_shape=(1, 3, 224, 224), device="cpu", max_epoch=1):
 
-    """
-    Calculates the number of floating point operations (FLOPs).
+  #   """
+  #   Calculates the number of floating point operations (FLOPs).
 
-    Args:
-        model (torch.nn.Module): neural network model.
-        input_shape (tuple): input tensor size.
-        device (str): device to perform computation on.
-        max_epoch (int): number of times
+  #   Args:
+  #       model (torch.nn.Module): neural network model.
+  #       input_shape (tuple): input tensor size.
+  #       device (str): device to perform computation on.
+  #       max_epoch (int): number of times
 
-    Returns:
-        (float): number of FLOPs, average from epoch, default is 1 epoch.
-        (float): elapsed seconds
-        (list): of string for a friendly human readable output
-    """
+  #   Returns:
+  #       (float): number of FLOPs, average from epoch, default is 1 epoch.
+  #       (float): elapsed seconds
+  #       (list): of string for a friendly human readable output
+  #   """
 
-    # create a float tensor on the device
-    # try:
-    #   dummy_inputs = torch.rand(input_shape, dtype=torch.float32, device=device)
-    # except Exception as e:
-    #   print(f'Torch failed on device: {device}, error: {e}')
-    # #
-    ttm_input = torch.rand(input_shape, dtype=torch.float32, device=device)
-    # ttm_input = torch.rand((1, 3, 224, 224), dtype=torch.float32, device=device)
-    tstart = time.time()
-    for i in range(max_epoch):
-      flops, params = flopth(model, inputs=(ttm_input,), bare_number=True)
-    tend = time.time()
-    etime = (tend - tstart)/max_epoch
+  #   # create a float tensor on the device
+  #   # try:
+  #   #   dummy_inputs = torch.rand(input_shape, dtype=torch.float32, device=device)
+  #   # except Exception as e:
+  #   #   print(f'Torch failed on device: {device}, error: {e}')
+  #   # #
+  #   ttm_input = torch.rand(input_shape, dtype=torch.float32, device=device)
+  #   # ttm_input = torch.rand((1, 3, 224, 224), dtype=torch.float32, device=device)
+  #   tstart = time.time()
+  #   for i in range(max_epoch):
+  #     flops, params = flopth(model, inputs=(ttm_input,), bare_number=True)
+  #   tend = time.time()
+  #   etime = (tend - tstart)/max_epoch
 
-    # kilo = 10^3, maga = 10^6, giga = 10^9, tera=10^12, peta=10^15, exa=10^18, zetta=10^21
-    valstr = []
-    valstr.append(f'Tensors device: {device}')
-    valstr.append(f'flops: {flops:,}')
-    valstr.append(f'params: {params:,}')
-    valstr.append(f'epoch: {max_epoch}')
-    valstr.append(f'sec: {etime}')
-    # valstr += f'Tensors device: {device}, flops: {flops}, params: {params}, epoch: {max_epoch}, sec: {etime}\n'
-    x = flops/etime
-    y = (x/10**15)*86400
-    valstr.append(f'Flops/s: {x:,}')
-    valstr.append(f'PetaFlops/s: {x/10**15}')
-    valstr.append(f'PetaFlops/day: {y}')
-    valstr.append(f'1 PetaFlopsDay (on this system will take): {round(1/y, 2):,.2f} days')
-    # valstr += f'Flops/s: {x}, PetaFlops/s: {x/10**15}, PetaFlops/day: {y} (24h day)\n'
-    # valstr += f'1 PetaFlopsDay: {round(1/y, 2)} days'
-    return flops, etime, valstr
+  #   # kilo = 10^3, maga = 10^6, giga = 10^9, tera=10^12, peta=10^15, exa=10^18, zetta=10^21
+  #   valstr = []
+  #   valstr.append(f'Tensors device: {device}')
+  #   valstr.append(f'flops: {flops:,}')
+  #   valstr.append(f'params: {params:,}')
+  #   valstr.append(f'epoch: {max_epoch}')
+  #   valstr.append(f'sec: {etime}')
+  #   # valstr += f'Tensors device: {device}, flops: {flops}, params: {params}, epoch: {max_epoch}, sec: {etime}\n'
+  #   x = flops/etime
+  #   y = (x/10**15)*86400
+  #   valstr.append(f'Flops/s: {x:,}')
+  #   valstr.append(f'PetaFlops/s: {x/10**15}')
+  #   valstr.append(f'PetaFlops/day: {y}')
+  #   valstr.append(f'1 PetaFlopsDay (on this system will take): {round(1/y, 2):,.2f} days')
+  #   # valstr += f'Flops/s: {x}, PetaFlops/s: {x/10**15}, PetaFlops/day: {y} (24h day)\n'
+  #   # valstr += f'1 PetaFlopsDay: {round(1/y, 2)} days'
+  #   return flops, etime, valstr
   #
   # print fech_info about myself
   def print_info_self(self):
@@ -643,33 +643,33 @@ class Pluto_Happy(object):
     print(x)
     self._ph()
     #
-    self._pp('Model', 'TTM, Tiny Torch Model on: CPU')
-    mtoy = TTM()
+    # self._pp('Model', 'TTM, Tiny Torch Model on: CPU')
+    # mtoy = TTM()
     # my_model = MyModel()
     # dev = torch.device("cuda:0")
-    a,b,c = self.fetch_info_flops(mtoy)
-    y = round((a/b)/self.flops_per_sec_gcolab_cpu * 100, 2)
-    self._pp('Flops', f'{a:,} flops')
-    self._pp('Total elapse time', f'{b:,} seconds')
-    self._pp('Flops compared', f'{y:,}% of Google Colab Pro')
-    for i, val in enumerate(c):
-      self._pp(f'Info {i}', val)
-    self._ph()
+    # a,b,c = self.fetch_info_flops(mtoy)
+    # y = round((a/b)/self.flops_per_sec_gcolab_cpu * 100, 2)
+    # self._pp('Flops', f'{a:,} flops')
+    # self._pp('Total elapse time', f'{b:,} seconds')
+    # self._pp('Flops compared', f'{y:,}% of Google Colab Pro')
+    # for i, val in enumerate(c):
+    #   self._pp(f'Info {i}', val)
+    # self._ph()
     #
-    try:
-      self._pp('Model', 'TTM, Tiny Torch Model on: GPU')
-      dev = torch.device("cuda:0")
-      a2,b2,c2 = self.fetch_info_flops(mtoy, device=dev)
-      y2 = round((a2/b2)/self.flops_per_sec_gcolab_gpu * 100, 2)
-      self._pp('Flops', f'{a2:,} flops')
-      self._pp('Total elapse time', f'{b2:,} seconds')
-      self._pp('Flops compared', f'{y2:,}% of Google Colab Pro')
-      d2 = round(((a2/b2)/(a/b))*100, 2)
-      self._pp('Flops GPU compared', f'{d2:,}% of CPU (or {round(d2-100,2):,}% faster)')
-      for i, val in enumerate(c2):
-        self._pp(f'Info {i}', val)
-    except Exception as e:
-      self._pp('Error', e)
+    # try:
+    #   self._pp('Model', 'TTM, Tiny Torch Model on: GPU')
+    #   dev = torch.device("cuda:0")
+    #   a2,b2,c2 = self.fetch_info_flops(mtoy, device=dev)
+    #   y2 = round((a2/b2)/self.flops_per_sec_gcolab_gpu * 100, 2)
+    #   self._pp('Flops', f'{a2:,} flops')
+    #   self._pp('Total elapse time', f'{b2:,} seconds')
+    #   self._pp('Flops compared', f'{y2:,}% of Google Colab Pro')
+    #   d2 = round(((a2/b2)/(a/b))*100, 2)
+    #   self._pp('Flops GPU compared', f'{d2:,}% of CPU (or {round(d2-100,2):,}% faster)')
+    #   for i, val in enumerate(c2):
+    #     self._pp(f'Info {i}', val)
+    # except Exception as e:
+    #   self._pp('Error', e)
     self._ph()
     #
     return
