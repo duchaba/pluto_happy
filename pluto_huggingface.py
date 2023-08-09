@@ -1,6 +1,3 @@
-
-# manual copy pluto file here
-
 ## required lib, required "pip install"
 # import transformers
 # import accelerate
@@ -9,7 +6,7 @@
 import torch
 import cryptography
 import cryptography.fernet
-#from flopth import flopth
+from flopth import flopth
 ## interface libs, required "pip install"
 # import gradio
 import huggingface_hub
@@ -554,56 +551,90 @@ class Pluto_Happy(object):
     f.close()
     return
   #
-  # # fetch flops info
-  # def fetch_info_flops(self,model, input_shape=(1, 3, 224, 224), device="cpu", max_epoch=1):
+  # fetch flops info
+  def fetch_info_flops(self,model, input_shape=(1, 3, 224, 224), device="cpu", max_epoch=1):
 
-  #   """
-  #   Calculates the number of floating point operations (FLOPs).
+    """
+    Calculates the number of floating point operations (FLOPs).
 
-  #   Args:
-  #       model (torch.nn.Module): neural network model.
-  #       input_shape (tuple): input tensor size.
-  #       device (str): device to perform computation on.
-  #       max_epoch (int): number of times
+    Args:
+        model (torch.nn.Module): neural network model.
+        input_shape (tuple): input tensor size.
+        device (str): device to perform computation on.
+        max_epoch (int): number of times
 
-  #   Returns:
-  #       (float): number of FLOPs, average from epoch, default is 1 epoch.
-  #       (float): elapsed seconds
-  #       (list): of string for a friendly human readable output
-  #   """
+    Returns:
+        (float): number of FLOPs, average from epoch, default is 1 epoch.
+        (float): elapsed seconds
+        (list): of string for a friendly human readable output
+    """
 
-  #   # create a float tensor on the device
-  #   # try:
-  #   #   dummy_inputs = torch.rand(input_shape, dtype=torch.float32, device=device)
-  #   # except Exception as e:
-  #   #   print(f'Torch failed on device: {device}, error: {e}')
-  #   # #
-  #   ttm_input = torch.rand(input_shape, dtype=torch.float32, device=device)
-  #   # ttm_input = torch.rand((1, 3, 224, 224), dtype=torch.float32, device=device)
-  #   tstart = time.time()
-  #   for i in range(max_epoch):
-  #     flops, params = flopth(model, inputs=(ttm_input,), bare_number=True)
-  #   tend = time.time()
-  #   etime = (tend - tstart)/max_epoch
+    ttm_input = torch.rand(input_shape, dtype=torch.float32, device=device)
+    # ttm_input = torch.rand((1, 3, 224, 224), dtype=torch.float32, device=device)
+    tstart = time.time()
+    for i in range(max_epoch):
+      flops, params = flopth(model, inputs=(ttm_input,), bare_number=True)
+    tend = time.time()
+    etime = (tend - tstart)/max_epoch
 
-  #   # kilo = 10^3, maga = 10^6, giga = 10^9, tera=10^12, peta=10^15, exa=10^18, zetta=10^21
-  #   valstr = []
-  #   valstr.append(f'Tensors device: {device}')
-  #   valstr.append(f'flops: {flops:,}')
-  #   valstr.append(f'params: {params:,}')
-  #   valstr.append(f'epoch: {max_epoch}')
-  #   valstr.append(f'sec: {etime}')
-  #   # valstr += f'Tensors device: {device}, flops: {flops}, params: {params}, epoch: {max_epoch}, sec: {etime}\n'
-  #   x = flops/etime
-  #   y = (x/10**15)*86400
-  #   valstr.append(f'Flops/s: {x:,}')
-  #   valstr.append(f'PetaFlops/s: {x/10**15}')
-  #   valstr.append(f'PetaFlops/day: {y}')
-  #   valstr.append(f'1 PetaFlopsDay (on this system will take): {round(1/y, 2):,.2f} days')
-  #   # valstr += f'Flops/s: {x}, PetaFlops/s: {x/10**15}, PetaFlops/day: {y} (24h day)\n'
-  #   # valstr += f'1 PetaFlopsDay: {round(1/y, 2)} days'
-  #   return flops, etime, valstr
+    # kilo = 10^3, maga = 10^6, giga = 10^9, tera=10^12, peta=10^15, exa=10^18, zetta=10^21
+    valstr = []
+    valstr.append(f'Tensors device: {device}')
+    valstr.append(f'flops: {flops:,}')
+    valstr.append(f'params: {params:,}')
+    valstr.append(f'epoch: {max_epoch}')
+    valstr.append(f'sec: {etime}')
+    # valstr += f'Tensors device: {device}, flops: {flops}, params: {params}, epoch: {max_epoch}, sec: {etime}\n'
+    x = flops/etime
+    y = (x/10**15)*86400
+    valstr.append(f'Flops/s: {x:,}')
+    valstr.append(f'PetaFlops/s: {x/10**15}')
+    valstr.append(f'PetaFlops/day: {y}')
+    valstr.append(f'1 PetaFlopsDay (on this system will take): {round(1/y, 2):,.2f} days')
+    return flops, etime, valstr
   #
+  def print_petaflops(self):
+
+    """
+    Prints the flops and peta-flops-day calculation. 
+    **WARING**: This method will break/interfer with Stable Diffusion use of LoRA.
+    I can't debug why yet.
+
+    Args:
+        None
+
+    Returns:
+        None    
+    """
+    self._pp('Model', 'TTM, Tiny Torch Model on: CPU')
+    mtoy = TTM()
+    my_model = MyModel()
+    dev = torch.device("cuda:0")
+    a,b,c = self.fetch_info_flops(mtoy)
+    y = round((a/b)/self.flops_per_sec_gcolab_cpu * 100, 2)
+    self._pp('Flops', f'{a:,} flops')
+    self._pp('Total elapse time', f'{b:,} seconds')
+    self._pp('Flops compared', f'{y:,}% of Google Colab Pro')
+    for i, val in enumerate(c):
+      self._pp(f'Info {i}', val)
+    self._ph()
+    
+    try:
+      self._pp('Model', 'TTM, Tiny Torch Model on: GPU')
+      dev = torch.device("cuda:0")
+      a2,b2,c2 = self.fetch_info_flops(mtoy, device=dev)
+      y2 = round((a2/b2)/self.flops_per_sec_gcolab_gpu * 100, 2)
+      self._pp('Flops', f'{a2:,} flops')
+      self._pp('Total elapse time', f'{b2:,} seconds')
+      self._pp('Flops compared', f'{y2:,}% of Google Colab Pro')
+      d2 = round(((a2/b2)/(a/b))*100, 2)
+      self._pp('Flops GPU compared', f'{d2:,}% of CPU (or {round(d2-100,2):,}% faster)')
+      for i, val in enumerate(c2):
+        self._pp(f'Info {i}', val)
+    except Exception as e:
+      self._pp('Error', e)
+    self._ph()    
+    return
   # print fech_info about myself
   def print_info_self(self):
 
@@ -643,34 +674,7 @@ class Pluto_Happy(object):
     print(x)
     self._ph()
     #
-    # self._pp('Model', 'TTM, Tiny Torch Model on: CPU')
-    # mtoy = TTM()
-    # my_model = MyModel()
-    # dev = torch.device("cuda:0")
-    # a,b,c = self.fetch_info_flops(mtoy)
-    # y = round((a/b)/self.flops_per_sec_gcolab_cpu * 100, 2)
-    # self._pp('Flops', f'{a:,} flops')
-    # self._pp('Total elapse time', f'{b:,} seconds')
-    # self._pp('Flops compared', f'{y:,}% of Google Colab Pro')
-    # for i, val in enumerate(c):
-    #   self._pp(f'Info {i}', val)
-    # self._ph()
-    #
-    # try:
-    #   self._pp('Model', 'TTM, Tiny Torch Model on: GPU')
-    #   dev = torch.device("cuda:0")
-    #   a2,b2,c2 = self.fetch_info_flops(mtoy, device=dev)
-    #   y2 = round((a2/b2)/self.flops_per_sec_gcolab_gpu * 100, 2)
-    #   self._pp('Flops', f'{a2:,} flops')
-    #   self._pp('Total elapse time', f'{b2:,} seconds')
-    #   self._pp('Flops compared', f'{y2:,}% of Google Colab Pro')
-    #   d2 = round(((a2/b2)/(a/b))*100, 2)
-    #   self._pp('Flops GPU compared', f'{d2:,}% of CPU (or {round(d2-100,2):,}% faster)')
-    #   for i, val in enumerate(c2):
-    #     self._pp(f'Info {i}', val)
-    # except Exception as e:
-    #   self._pp('Error', e)
-    # self._ph()
+
     #
     return
   #
@@ -716,12 +720,13 @@ def add_method(cls):
     setattr(cls, func.__name__, wrapper)
     return func # returning func means func can still be used normally
   return decorator
+#
 
 # prompt: use gradio to load model stabilityai/stable-diffusion-xl-base-1.0
-# grade: F // Not even close to working code. It is because the "load()" function is 
+# grade: F // Not even close to working code. It is because the "load()" function is
 # introduced about a year ago (too recent?)
-# 
-# 
+#
+#
 import gradio
 import transformers
 import torch
@@ -771,9 +776,9 @@ def fetch_image_model(self, model):
 
   self.device = 'cuda'
   pipe = diffusers.StableDiffusionXLPipeline.from_pretrained(
-    model, 
-    torch_dtype=torch.float16, 
-    use_safetensors=True, 
+    model,
+    torch_dtype=torch.float16,
+    use_safetensors=True,
     variant="fp16")
   pipe.to(self.device)
   self.pipe = pipe
@@ -791,11 +796,11 @@ def fetch_image_model(self, model):
 
 @add_method(Pluto_Happy)
 def draw_me(self,
-  prompt, 
-  negative_prompt, 
-  height, 
-  width, 
-  steps, 
+  prompt,
+  negative_prompt,
+  height,
+  width,
+  steps,
   seed):
 
   """
@@ -835,7 +840,7 @@ def draw_me(self,
 # grade: F // after a few tries with different prompt, nothing work. So I wrote it manually.
 #
 # prompt for doc
-# prompt: write python inline documentation for the following function: 
+# prompt: write python inline documentation for the following function:
 # grade: A // it writes good doc.
 
 @add_method(Pluto_Happy)
@@ -859,7 +864,7 @@ def fetch_gradio_interface(self, predict_fn):
   """
 
   inp=[
-    gradio.Textbox(label='Ask me what image do you want to draw.', 
+    gradio.Textbox(label='Ask me what image do you want to draw.',
       value='A picture of a beautiful model on Hawaii beach with super realistic detail, in 4K clarity, soft background focus, and vibrant colors.'),
     gradio.Textbox(label='What do you do NOT want in the picture?', value='dirty, pornographic'),
     gradio.Slider(512, 1024, 768, step=128, label='Height'),
