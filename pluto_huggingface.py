@@ -735,6 +735,17 @@ import diffusers
 #
 @add_method(Pluto_Happy)
 def fetch_auto_load(self, model='stabilityai/stable-diffusion-xl-base-1.0'):
+  """
+  This function is used to load HuggingFace pretrained model and run inference.
+  
+  Args:
+    model: A string param. The name of a pretrained model. 
+    Default is "stabilityai/stable-diffusion-xl-base-1.0"
+
+  Returns:
+    None
+  """
+
   model= f'models/{model}'
   title='Pluto: Latest Image Generation'
   desc='This space Pluto Sandbox.'
@@ -754,6 +765,11 @@ def fetch_auto_load(self, model='stabilityai/stable-diffusion-xl-base-1.0'):
 #
 # prompt: write python inline documentation for the following function: fetch_image_model
 # grade: A- // it does not said I stored the pipe in self.pipe
+
+import gradio
+import transformers
+import torch
+import diffusers
 
 @add_method(Pluto_Happy)
 def fetch_image_model(self, model):
@@ -801,7 +817,12 @@ def draw_me(self,
   height,
   width,
   steps,
-  seed):
+  seed,
+  denoising_end,
+  guidance_scale,
+  prompt_2,
+  negative_prompt_2
+  ):
 
   """
   Generate image using the prompt using Stable Diffusion.
@@ -829,7 +850,11 @@ def draw_me(self,
     num_inference_steps=steps,
     height=height,
     width=width,
-    num_images_per_prompt=1,
+    denoising_end=denoising_end,
+    guidance_scale=guidance_scale,
+    prompt_2=prompt_2,
+    negative_prompt_2=negative_prompt_2,
+    num_images_per_prompt=ximage,
     generator=gen,
     output_type="pil",
     ).images
@@ -870,7 +895,12 @@ def fetch_gradio_interface(self, predict_fn):
     gradio.Slider(512, 1024, 768, step=128, label='Height'),
     gradio.Slider(512, 1024, 768, step=128, label='Width'),
     gradio.Slider(5, maximum=80, value=40, step=5, label='Number of Iterations'),
-    gradio.Slider(minimum=1, step=1, maximum=1000000, randomize=True, label='Seed')]
+    gradio.Slider(minimum=1, step=1, maximum=1000000, randomize=True, label='Seed (Generate difference picture)'),
+    gradio.Slider(0, maximum=1.0, value=1, step=0.02, label='Advance: denoising_end'),
+    gradio.Slider(0.5, maximum=12.0, value=7.5, step=0.5, label='Advance: guidance_scale'),
+    gradio.Textbox(label='Advance: prompt_2: for the second decoder.', value=''),
+    gradio.Textbox(label='Advance: negative_prompt_2: for the second decoder.', value='pixel noise, , mishape feature')
+    ]
   out=['image']
   title="Stable Diffusion XL model"
   desc='It is hacking time.'
@@ -903,7 +933,7 @@ def dance_it(self):
   print('|    o   \ o /  _ o         __|    \ /     |__        o _  \ o /   o    |')
   print('|   /|\    |     /\   ___\o   \o    |    o/    o/__   /\     |    /|\   |')
   print('|   / \   / \   | \  /)  |    ( \  /o\  / )    |  (\  / |   / \   / \   |')
-  print('|--------------------------------Bye_Bye--------------------------------|')
+  print('|----------------------------Yahoo_ooo----------------------------------|')
   return
 #
 
@@ -923,10 +953,10 @@ def print_monkey(self):
   """
 
   print("""
-ooO----Monkey_See------------------------------------------------Monkey_Do---Ooo
-                 |     |    #                 ##                #    ._____.
-     ***         |.===.|    #=ooO=========Ooo=##=ooO========Ooo=#    | -_- |
-    (o o)        {}o o{}    # //   (o o)  //  ##  //  (o o) //  #    ([o o])
+0----Monkey_See-------------.-----------------..----------------.--Monkey_Do---0
+|                >     <    |                 ||                |    ._____.   |
+0    ***         |.===.|    !=ooO=========Ooo=!!=ooO========Ooo=!    | -_- |   0
+|   (o o)        {}o o{}       \\\\  (o o)  //      \\\\  (o o) //       ([o o])   |
 ooO--(_)--Ooo-ooO--(_)--Ooo---------(_)----------------(_)--------ooO--(_)---Ooo
   """)
   return
