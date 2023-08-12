@@ -608,7 +608,7 @@ class Pluto_Happy(object):
     """
     self._pp('Model', 'TTM, Tiny Torch Model on: CPU')
     mtoy = TTM()
-    my_model = MyModel()
+    # my_model = MyModel()
     dev = torch.device("cuda:0")
     a,b,c = self.fetch_info_flops(mtoy)
     y = round((a/b)/self.flops_per_sec_gcolab_cpu * 100, 2)
