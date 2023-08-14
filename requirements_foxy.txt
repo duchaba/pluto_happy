@@ -1,0 +1,16 @@
+cryptography
+huggingface_hub
+pynvml
+py-cpuinfo
+flopth
+gradio
+transformers
+diffusers
+torch
+accelerate
+fastai
+duckduckgo_search
+graphviz
+kaggle
+opendatasets
+timm
