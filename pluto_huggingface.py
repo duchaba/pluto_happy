@@ -1,14 +1,9 @@
+# [BEGIN OF pluto_happy]
 ## required lib, required "pip install"
-# import transformers
-# import accelerate
-# import openai
-# import llama_index
 import torch
 import cryptography
 import cryptography.fernet
 from flopth import flopth
-## interface libs, required "pip install"
-# import gradio
 import huggingface_hub
 import huggingface_hub.hf_api
 ## standard libs, no need to install
@@ -25,12 +20,14 @@ import socket
 import PIL
 import pandas
 import matplotlib
+import numpy
 import importlib.metadata
 import types
 import cpuinfo
 import pynvml
 import pathlib
 import re
+import pkg_resources
 # define class Pluto_Happy
 class Pluto_Happy(object):
   """
@@ -70,6 +67,7 @@ class Pluto_Happy(object):
     self.dname_img = "img_colab/"
     self.flops_per_sec_gcolab_cpu = 4887694725 # 925,554,209 | 9,276,182,810 | 1,722,089,747 | 5,287,694,725
     self.flops_per_sec_gcolab_gpu = 6365360673 # 1,021,721,764 | 9,748,048,188 | 2,245,406,502 | 6,965,360,673
+    self.fname_requirements = './pluto_happy/requirements.txt'
     #
     self.color_primary = '#2780e3' #blue
     self.color_secondary = '#373a3c' #dark gray
@@ -400,7 +398,7 @@ class Pluto_Happy(object):
         s (str):
             string value containing the crypto key.
     """
-    if pluto._fkey == 'your_key_goes_here':
+    if self._fkey == 'your_key_goes_here':
       raise Exception('Cryto Key is not correct!')
     #
     s=self._fkey[::-1]
@@ -635,6 +633,78 @@ class Pluto_Happy(object):
       self._pp('Error', e)
     self._ph()    
     return
+  #
+  #
+  def fetch_installed_libraries(self):
+    """
+    Retrieves and prints the names and versions of Python libraries installed by the user,
+    excluding the standard libraries.
+
+    Args:
+    -----
+      None
+
+    Returns:
+    --------
+    dictionary: (dict)
+      A dictionary where keys are the names of the libraries and values are their respective versions.
+
+    Examples:
+    ---------
+      libraries = get_installed_libraries()
+      for name, version in libraries.items():
+        print(f"{name}: {version}")
+    """
+    # List of standard libraries (this may not be exhaustive and might need updates based on the Python version)
+    standard_libs = list(sys.builtin_module_names)
+
+    installed_libraries = {}
+    
+    # Iterate over all installed distributions
+    for dist in pkg_resources.working_set:
+      if dist.project_name.lower() not in standard_libs:
+        installed_libraries[dist.project_name] = dist.version
+
+    return installed_libraries
+  #
+  #
+  def fetch_match_file_dict(self, file_path, reference_dict):
+    """
+    Reads a file from the disk, creates an array with each line as an item,
+    and checks if each line exists as a key in the provided dictionary. If it exists, 
+    the associated value from the dictionary is also returned.
+
+    Parameters:
+    -----------
+    file_path: str
+        Path to the file to be read.
+    reference_dict: dict
+        Dictionary against which the file content (each line) will be checked.
+
+    Returns:
+    --------
+    dict:
+        A dictionary where keys are the lines from the file and values are either 
+        the associated values from the reference dictionary or None if the key 
+        doesn't exist in the dictionary.
+
+    Raises:
+    -------
+    FileNotFoundError:
+        If the provided file path does not exist.
+    """
+
+    if not os.path.exists(file_path):
+        raise FileNotFoundError(f"The file at {file_path} does not exist.")
+
+    with open(file_path, 'r') as file:
+        lines = file.readlines()
+
+    # Check if each line (stripped of whitespace and newline characters) exists in the reference dictionary.
+    # If it exists, fetch its value. Otherwise, set the value to None.
+    results = {line.strip(): reference_dict.get(line.strip(), None) for line in lines}
+
+    return results
   # print fech_info about myself
   def print_info_self(self):
 
@@ -655,30 +725,39 @@ class Pluto_Happy(object):
     self._pp('.','.')
     self._pp("...", "¯\_(ツ)_/¯")
     self._ph()
-    #
+    # system
+    self._pp('System', 'Info')
     x = self.fetch_info_system()
     print(x)
     self._ph()
-    #
+    # gpu
+    self._pp('GPU', 'Info')
     x = self.fetch_info_gpu()
     print(x)
     self._ph()
-    #
-    x = self.fetch_info_lib_import()
-    self._pp('Libraries', 'Imported')
-    for i, val in enumerate(x):
-      self._pp(f'Lib {i}', val)
+    # lib used
+    self._pp('Installed lib from', self.fname_requirements)
     self._ph()
-    #
+    x = self.fetch_match_file_dict(self.fname_requirements, self.fetch_installed_libraries())
+    for item, value in x.items():
+      self._pp(f'{item} version', value)
+    self._ph()
+    self._pp('Standard lib from', 'System')
+    self._ph()
+    self._pp('matplotlib version', matplotlib.__version__)
+    self._pp('numpy version', numpy.__version__)
+    self._pp('pandas version',pandas.__version__)
+    self._pp('PIL version', PIL.__version__)
+    self._ph()
+    # host ip
+    self._pp('Host', 'Info')
     x = self.fetch_info_host_ip()
     print(x)
     self._ph()
     #
-
-    #
     return
   #
-# (end of class Pluto_Happy)
+# 
 # define TTM for use in calculating flops
 class TTM(torch.nn.Module):
 
@@ -721,7 +800,10 @@ def add_method(cls):
     return func # returning func means func can still be used normally
   return decorator
 #
-
+# [END OF pluto_happy]
+#
+# [BEGIN OF pluto_huggingface]
+#
 # prompt: use gradio to load model stabilityai/stable-diffusion-xl-base-1.0
 # grade: F // Not even close to working code. It is because the "load()" function is
 # introduced about a year ago (too recent?)
@@ -960,3 +1042,6 @@ def print_monkey(self):
 ooO--(_)--Ooo-ooO--(_)--Ooo---------(_)----------------(_)--------ooO--(_)---Ooo
   """)
   return
+#
+# [END OF pluto_huggingface]
+#

@@ -802,7 +802,7 @@ def add_method(cls):
 #
 # [END OF pluto_happy]
 #
-# [BEGIN OF pluto_foxy]
+# [BEGIN OF pluto_huggingface]
 #
 # prompt: use gradio to load model stabilityai/stable-diffusion-xl-base-1.0
 # grade: F // Not even close to working code. It is because the "load()" function is
@@ -1042,7 +1042,11 @@ def print_monkey(self):
 ooO--(_)--Ooo-ooO--(_)--Ooo---------(_)----------------(_)--------ooO--(_)---Ooo
   """)
   return
-
+#
+# [END OF pluto_huggingface]
+#
+# [BEGIN OF pluto_foxy]
+#
 # prompt: write new class Pluto_FastAI inherent from Pluto_Happy with documentation
 # Note: 90% correct, the "init()" missing self and name parameter, and super() is wrong
 # and I add in new method say_tagline() just for fun
