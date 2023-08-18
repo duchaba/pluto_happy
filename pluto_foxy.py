@@ -27,7 +27,7 @@ import cpuinfo
 import pynvml
 import pathlib
 import re
-import pkg_resources
+import subprocess
 # define class Pluto_Happy
 class Pluto_Happy(object):
   """
@@ -655,16 +655,20 @@ class Pluto_Happy(object):
       for name, version in libraries.items():
         print(f"{name}: {version}")
     """
-    # List of standard libraries (this may not be exhaustive and might need updates based on the Python version)
-    standard_libs = list(sys.builtin_module_names)
-
-    installed_libraries = {}
+    result = subprocess.run(['pip', 'freeze'], stdout=subprocess.PIPE)
     
-    # Iterate over all installed distributions
-    for dist in pkg_resources.working_set:
-      if dist.project_name.lower() not in standard_libs:
-        installed_libraries[dist.project_name] = dist.version
+    # Decode result and split by lines
+    packages = result.stdout.decode('utf-8').splitlines()
 
+    # Split each line by '==' to separate package names and versions
+    installed_libraries = {}
+    for package in packages:
+      try:
+        name, version = package.split('==')
+        installed_libraries[name] = version
+      except Exception as e:
+        #print(f'{package}: Error: {e}')
+        pass
     return installed_libraries
   #
   #
