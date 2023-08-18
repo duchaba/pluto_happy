@@ -706,7 +706,7 @@ class Pluto_Happy(object):
 
     # Check if each line (stripped of whitespace and newline characters) exists in the reference dictionary.
     # If it exists, fetch its value. Otherwise, set the value to None.
-    results = {line.strip(): reference_dict.get(line.strip(), None) for line in lines}
+    results = {line.strip(): reference_dict.get(line.strip().replace('_','-'), None) for line in lines}
 
     return results
   # print fech_info about myself
@@ -752,6 +752,7 @@ class Pluto_Happy(object):
     self._pp('numpy version', numpy.__version__)
     self._pp('pandas version',pandas.__version__)
     self._pp('PIL version', PIL.__version__)
+    self._pp('torch version', torch.__version__)
     self._ph()
     # host ip
     self._pp('Host', 'Info')
