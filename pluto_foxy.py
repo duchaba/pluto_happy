@@ -1897,7 +1897,58 @@ def fetch_timm_models_name(partial_label):
   print(f'Total available models: {len(avail_pretrained_models)}')
   print(f'Total models with partial label {partial_label}: {len(models)} ')
   return models
+# 
+# prompt: Add in a parameter to print the result to a file with the same name as the notebook but with .py file extention
+import json
+@add_method(Pluto_FastAI)
+def fetch_code_cells(self, notebook_name, 
+  filter_magic="# %%write", 
+  write_to_file=True, fname_override=None):
+  
+  """
+  Reads a Jupyter notebook (.ipynb file) and writes out all the code cells
+  that start with the specified magic command to a .py file.
 
+  Parameters:
+  - notebook_name (str): Name of the notebook file (with .ipynb extension).
+  - filter_magic (str): Magic command filter. Only cells starting with this command will be written.
+      The defualt is: "# %%write"
+  - write_to_file (bool): If True, writes the filtered cells to a .py file.
+      Otherwise, prints them to the standard output. The default is True.
+  - fname_override (str): If provided, overrides the output filename. The default is None.
+
+  Returns:
+  - None: Writes the filtered code cells to a .py file or prints them based on the parameters.
+
+  """
+  with open(notebook_name, 'r', encoding='utf-8') as f:
+    notebook_content = json.load(f)
+
+  output_content = []
+
+  # Loop through all the cells in the notebook
+  for cell in notebook_content['cells']:
+    # Check if the cell type is 'code' and starts with the specified magic command
+    if cell['cell_type'] == 'code' and cell['source'] and cell['source'][0].startswith(filter_magic):
+      # Append the source code of the cell to output_content
+      output_content.append(''.join(cell['source']))
+
+  if write_to_file:
+    if fname_override is None:
+      # Derive the output filename by replacing .ipynb with .py
+      output_filename = notebook_name.replace(".ipynb", ".py")
+    else:
+      output_filename = fname_override
+    with open(output_filename, 'w', encoding='utf-8') as f:
+      f.write('\n'.join(output_content))
+    print(f'File: {output_filename} written to disk.')
+  else:
+    # Print the code cells to the standard output
+    print('\n'.join(output_content))
+    print('-' * 40)  # print separator
+  return
+# Example usage:
+# print_code_cells_from_notebook('your_notebook_name_here.ipynb')
 # prompt: (from gpt4)
 from fastai.callback.core import Callback
 #
