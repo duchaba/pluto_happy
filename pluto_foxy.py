@@ -39,10 +39,23 @@ class Pluto_Happy(object):
   such as Pluto_HFace with a lot more function on HuggingFace, LLM and Transformers.
 
   Args:
-      name (str): the display name, e.g. "Hanna the seeker"
+    name (str): the display name, e.g. "Hanna the seeker"
 
   Returns:
-      (object): the class instance.
+    (object): the class instance.
+
+  Notes:
+    - All function begins with one of the following:
+    1. fetch_
+    2. push_
+    3. print_
+    4. say_
+    5. shake_hand_
+    6. make_
+    7. write_
+    8. draw_
+    9. fix_
+    _
   """
 
   # initialize the object
@@ -223,7 +236,7 @@ class Pluto_Happy(object):
     return status
   #
   # automatically restart huggingface space
-  def restart_hface_periodically(self):
+  def fix_restart_hface_periodically(self):
 
     """
     This function restarts the huggingface space automatically in random
@@ -243,7 +256,7 @@ class Pluto_Happy(object):
     return
   #
   # log into huggingface
-  def login_hface(self, key=None):
+  def shake_hand_login_hface(self, key=None):
 
     """
     Log into HuggingFace.
@@ -257,7 +270,7 @@ class Pluto_Happy(object):
     """
 
     if (key is None):
-      x = self._decrypt_it(self._huggingface_crkey)
+      x = self._make_decrypt(self._huggingface_crkey)
     else:
       x = key
     huggingface_hub.login(x, add_to_git_credential=True) # non-blocking login
@@ -385,7 +398,7 @@ class Pluto_Happy(object):
     return filenames
   #
   # fetch the crypto key
-  def _fetch_crypt(self,has_new_key=False):
+  def _make_crypt(self,has_new_key=False):
 
     """
     This function fetches the crypto key from the file or from the
@@ -408,7 +421,7 @@ class Pluto_Happy(object):
     return s
   #
   # generate new cryto key
-  def gen_key(self):
+  def make_crypt_key(self):
     """
     This function generates a new cryto key and saves it to a file
 
@@ -425,7 +438,7 @@ class Pluto_Happy(object):
     return key
   #
   # decrypt message
-  def decrypt_it(self, x):
+  def make_decrypt(self, x):
     """
     Decrypts the encrypted string using the stored crypto key.
 
@@ -435,13 +448,13 @@ class Pluto_Happy(object):
     Returns:
         x: (str) decrypted version of x.
     """
-    y = self._fetch_crypt()
+    y = self._make_crypt()
     f = cryptography.fernet.Fernet(y)
     m = f.decrypt(x)
     return m.decode()
   #
   # encrypt message
-  def encrypt_it(self, x):
+  def make_crypt(self, x):
     """
     encrypt message
 
@@ -452,7 +465,7 @@ class Pluto_Happy(object):
     str: encrypted message
     """
 
-    key = self._fetch_crypt()
+    key = self._make_crypt()
     p = x.encode()
     f = cryptography.fernet.Fernet(key)
     y = f.encrypt(p)
@@ -1004,7 +1017,7 @@ def fetch_gradio_interface(self, predict_fn):
 # Note 2: I have to write the code with the comment "# print dancer" first.
 
 @add_method(Pluto_Happy)
-def dance_it(self):
+def print_dancing(self):
 
   """
   This function prints a dancer
@@ -1145,7 +1158,7 @@ def draw_image_url(url):
 
 # change name and conform to Pluto coding style
 @add_method(Pluto_FastAI)
-def _download_one_image(self,url, directory, filename, is_display=False):
+def _fetch_one_image(self,url, directory, filename, is_display=False):
 
   """
   Downloads an image from the given URL, saves it in the given directory, and displays it.
@@ -1182,13 +1195,13 @@ def _download_one_image(self,url, directory, filename, is_display=False):
     print(f'Error: Can not download or display image: {directory}/{filename}.\nError: {e}')
   return
 
-# prompt: write a function call fetch_images that combine _download_one_image and download_images with documentation
+# prompt: write a function call fetch_images that combine _fetch_one_image and download_images with documentation
 # Grade: B // It works, but I change filename format and add in parameter upto_max
 
 # Upate to Pluto coding standard and name
 # Fetch images
 @add_method(Pluto_FastAI)
-def download_images_from_search(self, term, directory, is_display=False, upto_max=300):
+def fetch_images_from_search(self, term, directory, is_display=False, upto_max=300):
 
   """
   Searches for images of given term, downloads them, and saves them in the given directory.
@@ -1226,7 +1239,7 @@ def download_images_from_search(self, term, directory, is_display=False, upto_ma
     res = re.split('[\\?\\!\\&]', filename)
     #
     filename = res[0]
-    self._download_one_image(url, directory, filename, is_display)
+    self._fetch_one_image(url, directory, filename, is_display)
     img_download.append(f'{directory}/{filename}')
     if id == upto_max:
       break
@@ -1291,7 +1304,7 @@ def draw_thumb_images(self,dname, nrows=2, ncols=4):
 # Grade: A // it works, and I am getting smarter on how to phrase the prompt.
 
 @add_method(Pluto_FastAI)
-def delete_file_extensions(self,directory,file_ext_list):
+def fix_file_extensions(self,directory,file_ext_list):
 
   """
   Deletes files in a directory that are not in the file extension list.
@@ -1326,7 +1339,7 @@ def delete_file_extensions(self,directory,file_ext_list):
 
 @add_method(Pluto_FastAI)
 # delete non images file
-def delete_non_image_files(self,directory):
+def fix_non_image_files(self,directory):
 
   """
   Deletes non-image files from a directory.
@@ -1341,7 +1354,7 @@ def delete_non_image_files(self,directory):
 
   # Get the list of files in the directory
   img_types = ['.png', '.jpg', '.jpeg', '.gif']
-  file_delete = self.delete_file_extensions(directory, img_types)
+  file_delete = self.fix_file_extensions(directory, img_types)
   files = self.fetch_file_names(directory)
 
   #check on how many files deleted
@@ -1377,7 +1390,7 @@ import pathlib
 
 # update to Pluto standard naming convention
 @add_method(Pluto_FastAI)
-def bake_df_img_name(self, directory,label_fn=None):
+def make_df_img_name(self, directory,label_fn=None):
   """
   Creates/Bakes a pandas dataframe with two columns from directory of files,
   the first column name is: "full_path"
@@ -1412,7 +1425,7 @@ def bake_df_img_name(self, directory,label_fn=None):
 # Note: this time it got the @add_method correctly. Yahhoooo :-)
 
 @add_method(Pluto_FastAI)
-def resize_img_square(self, directory, img_size=512):
+def fix_resize_img_square(self, directory, img_size=512):
 
   """
   Resizes all images in a directory to a square.
@@ -1453,7 +1466,7 @@ import os
 
 # Function to download dataset from Kaggle website using opendatasets lib.
 @add_method(Pluto_FastAI)
-def download_kaggle_dataset(self,dataset_name, path_to_save):
+def fetch_kaggle_dataset(self,dataset_name, path_to_save):
 
   """
   Downloads a dataset from Kaggle website using opendatasets library.
@@ -1630,7 +1643,7 @@ def draw_fastai_data_block(self):
 # Note: rewrite to be a function for foxy
 
 @add_method(Pluto_FastAI)
-def bake_dloader_from_file(self, directory, y_fn):
+def make_dloader_from_file(self, directory, y_fn):
   dblock = fastai.data.block.DataBlock(
     get_items=fastai.data.transforms.get_image_files,
     get_y=y_fn)
@@ -1643,7 +1656,7 @@ def bake_dloader_from_file(self, directory, y_fn):
 
 # I rewrote it for extentable
 @add_method(Pluto_FastAI)
-def bake_image_dblock_from_file(self, directory, y_fn, is_dataset=False, is_verbose=False):
+def make_image_dblock_from_file(self, directory, y_fn, is_dataset=False, is_verbose=False):
 
   """
   Create a fastai datablock object from a directory of images.
@@ -1688,7 +1701,7 @@ def draw_df_ylabel(self, df,y_label='label'):
 # prompt: None
 # Note: I am unsure how to write the prompt for the following, other ask it to write document
 # Document doc:
-# prompt: write python detail inline documentation for the following function: bake_step1_data_source
+# prompt: write python detail inline documentation for the following function: make_step1_data_source
 # Grade: B // most of it correct
 
 import fastai
@@ -1696,7 +1709,7 @@ from fastai.data.all import *
 from fastai.vision.all import *
 import torchvision
 @add_method(Pluto_FastAI)
-def bake_step1_data_source(self, df, x_col_index=0, y_col_index=1,is_verbose=False):
+def make_step1_data_source(self, df, x_col_index=0, y_col_index=1,is_verbose=False):
 
   """
   Create a fastai DataBlock and DataSet objects from a Pandas dataframe.
@@ -1750,7 +1763,7 @@ def bake_step1_data_source(self, df, x_col_index=0, y_col_index=1,is_verbose=Fal
 # grade: A // it know how to write doc.
 
 @add_method(Pluto_FastAI)
-def bake_step2_split(self, df, dblock, fn=None, is_verbose=False):
+def make_step2_split(self, df, dblock, fn=None, is_verbose=False):
 
   """
   Split the DataFrame into training and validation datasets.
@@ -1795,7 +1808,7 @@ def bake_step2_split(self, df, dblock, fn=None, is_verbose=False):
 # Note: I am unsure how to write the prompt for the following, other ask it to write document
 
 @add_method(Pluto_FastAI)
-def bake_step3_transform(self, df, dblock, item_fn=None, batch_fn=None, is_verbose=False):
+def make_step3_transform(self, df, dblock, item_fn=None, batch_fn=None, is_verbose=False):
 
   """
   Transform the data into a DataSet and DataLoader objects.
