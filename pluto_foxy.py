@@ -1618,27 +1618,36 @@ def draw_diagram(self, nodes, edges, labels, node_color=None,
 # draw GraphViz for FastAI data block
 @add_method(Pluto_FastAI)
 def draw_fastai_data_block(self):
-  nodes = ["A", "A1", "A2", "A3", "A4", "A5", "A6", 
-    "B", "B1", "B2", "B3", "B4",
-    "C", "C1", "C2", "C3", "D"]
-  labels = ["@1_SOURCE", "Pandas", "X:Y Path", "X: Fn", "X:Y Block Type", "DataSet", "DataBlock",
-    "@2_SPLIT", "80/20 Default", "Fn Custom", "DataSet", "DataBlock",
-    "@3_TRANSFORM", "X: Transform", "X: Batch Augment", "OUT: DataLoader",
-    "@4_DANCE :-)"]
-  edges = [("A", "A6"), ("A6", "B"), ("B", "B4"), ("B4", "C"), ("C", "D"),
-    ("A", "A1"), ("A1", "A2"), ("A2", "A3"), ("A3", "A4"), ("A4", "A5"), 
-    ("B", "B1"), ("B", "B2"), ("B1", "B3"),
-    ("C", "C1"), ("C1", "C2"), ("C2", "C3")]
+  nodes = ["A1", "A2", "A3", "A4", "A5", "A6", "A7",
+    "B1", "B2",
+    "C1", "C2", "C3",
+    "D1", "D2",
+    "E1", "E2",
+    "F1", "F2",
+    "G1", "G2"]
+  labels = ["@1_SOURCE", "Pandas", "@2_Blocks", "@3_Splitter", "@4_Transform", "Batch_Size", "@A5_Data_Loader",
+    "X:Block", "Y:Block",
+    "get_x()", "get_items()", "get_y()",
+    "Random", "Pandas_col",
+    "Item_tfms", "Batch_tfms",
+    "Resize", "Augmentation",
+    "ImageDataLoaders\n.from_df()", "Other_Shortcut"]
+  edges = [("A1", "A2"), ("A2", "A3"), ("A3", "A4"), ("A4", "A5"), ("A5", "A6"), ("A6", "A7"),
+    ("A3", "B1"), ("A3","B2"),
+    ("B1", "C1"), ("B1", "C2"), ("B2", "C3"),
+    ("A4", "D1"), ("A4", "D2"),
+    ("A5", "E1"), ("A5", "E2"),
+    ("E1", "F1"), ("E2", "F2"),
+    ("A2", "G1"), ("A2", "G2")]
   #
   # draw it
   diagram = self.draw_diagram(nodes, edges, labels, node_color=None, 
-    horizontal=True, title='Pluto view of FastAI Datablocks 3-Steps Plus Disco Dancing :-)',
+    horizontal=True, title='Pluto view of FastAI Datablocks 5-Steps :-)',
     fontsize='8')
 
   # display it
   display(diagram)
   return diagram
-
 # prompt: None
 # Note: rewrite to be a function for foxy
 
