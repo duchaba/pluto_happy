@@ -70,11 +70,11 @@ class Pluto_Happy(object):
     self._ph()
     #
     # define class var for stable division
-    self._huggingface_crkey="gAAAAABkduT-XeiYtD41bzjLtwsLCe9y1FbHH6wZkOZwvLwCrgmOtNsFUPWVqMVG8MumazFhiUZy91mWEnLDLCFw3eKNWtOboIyON6yu4lctn6RCQ4Y9nJvx8wPyOnkzt7dm5OISgFcm"
-    self._gpt_crkey="'gAAAAABkgiYGQY8ef5y192LpNgrAAZVCP3bo2za9iWSZzkyOJtc6wykLwGjFjxKFpsNryMgEhCATJSonslooNSBJFM3OcnVBz4jj_lyXPQABOCsOWqZm6W9nrZYTZkJ0uWAAGJV2B8uzQ13QZgI7VCZ12j8Q7WfrIg=='"
+    self._huggingface_crkey=""
+    self._gpt_crkey=""
     self._fkey="your_key_goes_here"
-    self._github_crkey="gAAAAABksjLYjRoFxZDDW5RgBN_uvm6pqDP128S2qOEfv9PgVL8fwdtXzWvCeMHwnGcibAky5cGs3XNxMH4VgbaPBA3I_CPRp3bRK3TMNU4HGRKxbdMnJ7U04IkVSdcMn8o86z3yhcSn"
-    self._kaggle_crkey="gAAAAABksjOOU2a-BtZ4NV8BkmFhBzqjix7XL9DsKPrua7OaMc7t8QKGw_3Ut5wyv4NL4FHX74JFEEbmpVbsPINN7LcqLtewuyF0o0P9461PY9qLBAGy6Wr7PyE0qwDogQoDGJ1UJgPn"
+    self._github_crkey=""
+    self._kaggle_crkey=""
     #
     self.fname_id = 0
     self.dname_img = "img_colab/"
@@ -775,6 +775,95 @@ class Pluto_Happy(object):
     #
     return
   #
+  def draw_foxy_methods(self, items):
+    """
+      Draw all methods from Foxy, but not the "private" starting with "_" (underscore)
+
+      Args: None
+
+      Return: None
+    """
+    actions = ["draw_", "fetch_", "fix_", "make_", "print_", "push_", "say_", "shake_hand_", "write_"]
+    for action in actions:
+      i = 0
+      nodes = [f"{i}"]
+      edges = []
+      labels = [action]
+      for item in items:
+        if item.startswith(action):
+          i += 1
+          labels.append(f"{item}")
+          nodes.append(f"{i}" )
+          edges.append(("0", f"{i}"))
+      # #
+      # print(nodes, type(nodes))
+      # print(labels, type(labels))
+      # print(edges, type(edges))
+      d = foxy.draw_diagram(nodes, edges, labels, horizontal=True)
+      display(d)
+    return
+  #
+  def draw_fastai_data_block_v2(self):
+    """
+      Draw a Fast.ai DataBlock structure.
+
+      Args: None
+
+      Return: the matplotlib plot
+    """
+    nodes = ["A1", "A2", "A3", "A4", "A5", "A6", "A7",
+      "B1", "B2",
+      "C1", "C2", "C3",
+      "D1", "D2",
+      "E1", "E2",
+      "F1", "F2",
+      "G1", "G2"]
+    labels = ["@1_SOURCE", "Pandas", "@2_Blocks", "@3_Splitter", "@4_Transform", "Batch_Size", "@A5_Data_Loader",
+      "X:Block", "Y:Block",
+      "get_x()", "get_items()", "get_y()",
+      "Random", "Pandas_col",
+      "Item_tfms", "Batch_tfms",
+      "Resize", "Augmentation",
+      "ImageDataLoaders\n.from_df()", "Other_Shortcut"]
+    edges = [("A1", "A2"), ("A2", "A3"), ("A3", "A4"), ("A4", "A5"), ("A5", "A6"), ("A6", "A7"),
+      ("A3", "B1"), ("A3","B2"),
+      ("B1", "C1"), ("B1", "C2"), ("B2", "C3"),
+      ("A4", "D1"), ("A4", "D2"),
+      ("A5", "E1"), ("A5", "E2"),
+      ("E1", "F1"), ("E2", "F2"),
+      ("A2", "G1"), ("A2", "G2")]
+    #
+    # draw it
+    diagram = self.draw_diagram(nodes, edges, labels, node_color=None,
+      horizontal=True, title='Pluto view of FastAI Datablocks 5-Steps :-)',
+      fontsize='8')
+
+    # display it
+    display(diagram)
+    return diagram
+  #
+  def print_dataloader_spec(self,dl):
+    """
+      Print the Data Loarder specification.
+
+      Args: the fast.ai DataLoader
+
+      Return: None.
+    """
+    tsize = len(dl.train_ds)
+    vsize = len(dl.valid_ds)
+    ttsize = tsize+vsize
+    vcsize = len(dl.vocab)
+    self._ph()
+    self._pp("Total Image", ttsize)
+    t = str(tsize)+" x "+str(vsize) + ", " + str(numpy.round((tsize/ttsize)*100, 0)) + "% x " + str(numpy.round((vsize/ttsize)*100, 0)) + "%"
+    self._pp("Train .vs. Valid Image", t)
+    self._pp("Batch size", dl.bs)
+    self._pp("Number of Vocab/Label",vcsize)
+    self._pp("First and Last vocab", str(dl.vocab[0]) + ", " + str(dl.vocab[-1]))
+    self._pp("Image type", dl.train_ds[0])
+    self._ph()
+    return
 # 
 # define TTM for use in calculating flops
 class TTM(torch.nn.Module):
@@ -1201,7 +1290,8 @@ def _fetch_one_image(self,url, directory, filename, is_display=False):
 # Upate to Pluto coding standard and name
 # Fetch images
 @add_method(Pluto_FastAI)
-def fetch_images_from_search(self, term, directory, is_display=False, upto_max=300):
+def fetch_images_from_search(self, term, directory, 
+  is_display=False, upto_max=300, is_normalize_name=True):
 
   """
   Searches for images of given term, downloads them, and saves them in the given directory.
@@ -1211,6 +1301,7 @@ def fetch_images_from_search(self, term, directory, is_display=False, upto_max=3
     directory: (str) The directory to save the images in.
     is_display: (bool) If True, display the images. Default is False.
     upto_max: (int) The upto maximum number of images to download. Default is 300
+    is_normalize_name: (bool) If True use normalize the filename (term_0x), else use origitnal name. Default is True.
 
   Returns:
     A list of dictionaries, each of which contains the following keys:
@@ -1222,7 +1313,7 @@ def fetch_images_from_search(self, term, directory, is_display=False, upto_max=3
       height: The height of the image in pixels.
       width: The width of the image in pixels.
       source: The source of the image.
-    
+    and
     A list of images download file name
   """
 
@@ -1232,13 +1323,21 @@ def fetch_images_from_search(self, term, directory, is_display=False, upto_max=3
   # Download images
   id = 0
   img_download = []
+  img_dict = []
   for ix in images_info:
+    img_dict.append(ix)
+    # 
     url = ix['image']
-    # I add the clean filename below
-    filename = f"{term.replace(' ','_')}-{id}.{url.rsplit('.', 1)[-1]}"
-    res = re.split('[\\?\\!\\&]', filename)
+    if (is_normalize_name):
+      # I add the clean filename below
+      filename = f"{term.replace(' ','_')}-{id}.{url.rsplit('.', 1)[-1]}"
+      res = re.split('[\\?\\!\\&]', filename)
+      #
+      filename = res[0]
+    else:
+      filename = url.rsplit('/', 1)[-1]
+      filename = filename.replace('+', '_')
     #
-    filename = res[0]
     self._fetch_one_image(url, directory, filename, is_display)
     img_download.append(f'{directory}/{filename}')
     if id == upto_max:
@@ -1247,7 +1346,7 @@ def fetch_images_from_search(self, term, directory, is_display=False, upto_max=3
 
   # Display number of images download
   # print(f'Number of images download is: {id}')
-  return images_info, img_download
+  return img_dict, img_download
 
 # prompt: write a function to display thumb images from a directory of images in a row and column format
 # Grade: C+ // The calculate of the indexes "ax" is wrong. I correct it. And it import numpy but not usig it.
