@@ -799,7 +799,7 @@ class Pluto_Happy(object):
       # print(nodes, type(nodes))
       # print(labels, type(labels))
       # print(edges, type(edges))
-      d = foxy.draw_diagram(nodes, edges, labels, horizontal=True)
+      d = self.draw_diagram(nodes, edges, labels, horizontal=True)
       display(d)
     return
   #
