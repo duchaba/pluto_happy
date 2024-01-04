@@ -75,6 +75,18 @@ class Pluto_Happy(object):
     self._fkey="your_key_goes_here"
     self._github_crkey=""
     self._kaggle_crkey=""
+    self._meta_project_name = "?"
+    self._meta_error_rate = "?"
+    self._meta_base_model_name = "?"
+    self._meta_data_source = "?"
+    self._meta_data_info = "?"
+    self._meta_training_unix_time = 3422123
+    self._meta_ai_dev_stack = 'Fast.ai (framework), PyTorch, Pandas, Matplotlib, Numpy, Python-3.10'
+    self._meta_author = "Duc Haba"
+    self._meta_ai_assistant = "Foxy, the nine tails."
+    self._meta_genai = "Codey, GPT-4 Copilot, Gemini"
+    self._meta_human_coder = "Duc Haba and [he has no human :-) friend]"
+    self._meta_license = "GNU 3.0"
     #
     self.fname_id = 0
     self.dname_img = "img_colab/"
@@ -864,7 +876,60 @@ class Pluto_Happy(object):
     self._pp("Image type", dl.train_ds[0])
     self._ph()
     return
-# 
+  #
+  def print_learner_meta_info(self, learner):
+    """
+      Print all the leaner meta data and more.
+
+      Args: None
+
+      Return: None
+    """
+    self._ph()
+    self._pp("Name", learner._meta_project_name)
+    self._ph()
+    self._pp("Error_rate", learner._meta_error_rate)
+    self._pp("Base Model", learner._meta_base_model_name)
+    self._pp("Data Source", learner._meta_data_source)
+    self._pp("Data Info", learner._meta_data_info)
+    self._pp("Time Stamp", datetime.datetime.fromtimestamp(learner._meta_training_unix_time).strftime('%Y-%b-%d %H:%M:%S %p'))
+    self._pp("Learning Rate", learner.lr)
+    self._pp("Batch Size", learner.dls.bs)
+    self._pp("Momentum", learner.moms)
+    self._pp("AI Dev Stack", learner._meta_ai_dev_stack)
+    self._pp("Learner Vocab", learner.dls.vocab)
+    self._pp("Learner Vocab Size", len(learner.dls.vocab))
+    #
+    self._ph()
+    self._pp("Author", learner._meta_author)
+    self._pp("AI Assistant", learner._meta_ai_assistant)
+    self._pp("GenAI Coder", learner._meta_genai)
+    self._pp("[Friends] Human Coder", learner._meta_human_coder)
+    self._pp("License", learner._meta_license)
+    #
+    self._ph()
+    self._pp("Conclusion", learner._meta_notes)
+    self._ph()
+    return
+  # 
+  def make_learner_meta_tags(self, learner):
+    """
+      Copy all meta data from Foxy/self to learner object.
+
+      Args: (fastai.learner) the learner object
+
+      Returns: None
+    """
+    meta = ['_meta_project_name', '_meta_error_rate', '_meta_base_model_name',
+      '_meta_data_source', '_meta_data_info', '_meta_training_unix_time',
+      '_meta_ai_dev_stack', '_meta_author', '_meta_ai_assistant',
+      '_meta_genai', '_meta_human_coder', '_meta_license']
+    learner.__po__ = "4475632048616261202843292032303234"
+    for i in meta:
+      learner[i] = self[i]
+    return
+  #
+    
 # define TTM for use in calculating flops
 class TTM(torch.nn.Module):
 
