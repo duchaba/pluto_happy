@@ -88,6 +88,7 @@ class Pluto_Happy(object):
     self._meta_genai = "Codey, GPT-4 Copilot, Gemini"
     self._meta_human_coder = "Duc Haba and [he has no human :-) friend]"
     self._meta_license = "GNU 3.0"
+    self._meta_notes = "Rocking and rolling"
     #
     self.fname_id = 0
     self.dname_img = "img_colab/"
@@ -893,8 +894,11 @@ class Pluto_Happy(object):
     self._pp("Base Model", learner._meta_base_model_name)
     self._pp("Data Source", learner._meta_data_source)
     self._pp("Data Info", learner._meta_data_info)
-    self._pp("Time Stamp", datetime.datetime.fromtimestamp(learner._meta_training_unix_time).strftime('%Y-%b-%d %H:%M:%S %p'))
+    t = datetime.datetime.fromtimestamp(learner._meta_training_unix_time).strftime('%Y-%b-%d %H:%M:%S %p')
+    self._pp("Time Stamp", t)
+    # self._pp("Time Stamp", learner._meta_training_unix_time)
     self._pp("Learning Rate", learner.lr)
+    self._pp("Base Learning Rate", learner._meta_base_lr)
     self._pp("Batch Size", learner.dls.bs)
     self._pp("Momentum", learner.moms)
     self._pp("AI Dev Stack", learner._meta_ai_dev_stack)
@@ -921,13 +925,16 @@ class Pluto_Happy(object):
 
       Returns: None
     """
+    self._meta_training_unix_time = int(time.time())
     meta = ['_meta_project_name', '_meta_error_rate', '_meta_base_model_name',
       '_meta_data_source', '_meta_data_info', '_meta_training_unix_time',
       '_meta_ai_dev_stack', '_meta_author', '_meta_ai_assistant',
-      '_meta_genai', '_meta_human_coder', '_meta_license']
+      '_meta_genai', '_meta_human_coder', '_meta_license', 
+      '_meta_notes', '_meta_base_lr']
     learner.__po__ = "4475632048616261202843292032303234"
     for i in meta:
-      learner[i] = self[i]
+      a = getattr(self, i)
+      setattr(learner, i, a)
     return
   #
     
