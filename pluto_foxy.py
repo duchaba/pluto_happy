@@ -879,6 +879,7 @@ class Pluto_Happy(object):
     self._ph()
     return
   #
+  import datetime
   def print_learner_meta_info(self, learner):
     """
       Print all the leaner meta data and more.
@@ -937,7 +938,73 @@ class Pluto_Happy(object):
       setattr(learner, i, a)
     return
   #
-    
+  def make_prediction(self, img_down, learner, max=1):
+    """
+    Predict a butterfly image from a list of downloaded images.
+
+    Args:
+      img_down: (list) A list of downloaded image full-path file names. The test dataset.
+      learner: (fastai.learner) The learner object.
+      max: (int) the maximum number of images to predict. 
+        If max is negative then do the entire list.
+        If max is one then choose one random image from the list.
+
+    Returns:
+      (list) An array of the prediction (dictionary):
+        1. classification: (str) the classification prediction
+        2. accuracy score: (float) the accuracy value of the prediction
+        3. index: (int) the index of the prediction array
+        4. pre_arr: (list) the the prediction array
+        5. file_name: (str) the full-path file name of the image.
+    """
+    if max <= 0:
+      max = len(img_down)
+    #
+    val = []
+    #
+    for i in range(max):
+      if max == 1:
+        fname = random.choice(img_down)
+      else:
+        fname = img_down[i]
+      a1,b1,c1 = learner.predict(fastai.vision.core.PILImage.create(fname))
+      # print(f"This is prediction: {a1},\n index-value: {b1},\n Prediction-array: {c1}\nFilename: {fname}")
+      item = {
+        "classification": a1,
+        "accuracy_score": c1[b1],
+        "index": b1,
+        "pre_arr": c1,
+        "file_name": fname
+      }
+      val.append(item)
+    return val
+  #
+  def make_top_3_plus(self, pre_arr, learner):
+    """
+      Choose the top 3 highest accuracy score plus the "other" total.
+
+      Args: 
+        prediction array (list) a list of accuracy score in torch-value type.
+        learner (fastai.learner) the learner object
+
+      Return:
+        (list) An array of four record:
+          item name (str) the predict item name/vocab
+          accuracy score (float)
+    """
+    predict_list = pre_arr.tolist()
+    top_3 = sorted(range(len(predict_list)), key=lambda k: predict_list[k], reverse=True)[:3]
+    val = []
+    total = 0
+    for idx in top_3:
+      item = {"name": learner.dls.vocab[idx], "accuracy_score": predict_list[idx]}
+      val.append(item)
+      total += predict_list[idx]
+    #
+    item = {"name": "Other", "accuracy_score": 1-total}
+    val.append(item)
+    return val
+  #
 # define TTM for use in calculating flops
 class TTM(torch.nn.Module):
 
@@ -1296,10 +1363,10 @@ def fetch_image_url_online(self,term):
 # Import the necessary libraries.
 import IPython
 @add_method(Pluto_FastAI)
-def draw_image_url(url):
+def draw_image_url(self, url, width=0):
 
   """
-  Displays an image from a given URL.
+  Displays an image from a given filename or url=https://...
   The image can be any format supported by PIL.
   The function uses the IPython.display library to display the image.
 
@@ -1311,7 +1378,10 @@ def draw_image_url(url):
   """
 
   # Display the image.
-  display(IPython.core.display.Image(url))
+  if (width==0):
+    display(IPython.core.display.Image(url))
+  else:
+    display(IPython.core.display.Image(url,width=width))
   return
 
 # prompt: define a function to download image, save it in a directory and display it from url with error trapping and documentation
