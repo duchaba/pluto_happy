@@ -894,7 +894,10 @@ class Pluto_Happy(object):
     self._pp("Base Model", learner._meta_base_model_name)
     self._pp("Data Source", learner._meta_data_source)
     self._pp("Data Info", learner._meta_data_info)
-    t = datetime.datetime.fromtimestamp(learner._meta_training_unix_time).strftime('%Y-%b-%d %H:%M:%S %p')
+    try:
+      t = datetime.datetime.fromtimestamp(learner._meta_training_unix_time).strftime('%Y-%b-%d %H:%M:%S %p')
+    except Exception as e:
+      t = learner._meta_training_unix_time
     self._pp("Time Stamp", t)
     # self._pp("Time Stamp", learner._meta_training_unix_time)
     self._pp("Learning Rate", learner.lr)
