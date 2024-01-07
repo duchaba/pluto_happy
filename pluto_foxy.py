@@ -879,7 +879,6 @@ class Pluto_Happy(object):
     self._ph()
     return
   #
-  import datetime
   def print_learner_meta_info(self, learner):
     """
       Print all the leaner meta data and more.
@@ -1001,10 +1000,12 @@ class Pluto_Happy(object):
       val.append(item)
       total += predict_list[idx]
     #
-    item = {"name": "Other", "accuracy_score": 1-total}
+    item = {"name": "All Others", "accuracy_score": 1-total}
     val.append(item)
     return val
   #
+# ----------[End of Pluto Class]---------- 
+#
 # define TTM for use in calculating flops
 class TTM(torch.nn.Module):
 
@@ -1034,7 +1035,8 @@ class TTM(torch.nn.Module):
     x1 = self.conv4(x1)
     return x1
   #
-# (end of class TTM)
+# 
+# ----------[End of TTM model]----------
 # add module/method
 #
 import functools
@@ -1049,19 +1051,20 @@ def add_method(cls):
 #
 # [END OF pluto_happy]
 #
-# [BEGIN OF pluto_huggingface]
+# ----------[End of add_module moderator]----------
 #
-# prompt: use gradio to load model stabilityai/stable-diffusion-xl-base-1.0
-# grade: F // Not even close to working code. It is because the "load()" function is
-# introduced about a year ago (too recent?)
+# ----------[Begin Extra Pluto functions]----------
 #
 #
 import gradio
 import transformers
 import torch
 import diffusers
+import fastai
+from fastai.data.all import *
+from fastai.vision.all import *
+import torchvision
 
-#
 @add_method(Pluto_Happy)
 def fetch_auto_load(self, model='stabilityai/stable-diffusion-xl-base-1.0'):
   """
@@ -1094,11 +1097,6 @@ def fetch_auto_load(self, model='stabilityai/stable-diffusion-xl-base-1.0'):
 #
 # prompt: write python inline documentation for the following function: fetch_image_model
 # grade: A- // it does not said I stored the pipe in self.pipe
-
-import gradio
-import transformers
-import torch
-import diffusers
 
 @add_method(Pluto_Happy)
 def fetch_image_model(self, model):
@@ -1290,14 +1288,21 @@ ooO--(_)--Ooo-ooO--(_)--Ooo---------(_)----------------(_)--------ooO--(_)---Ooo
   """)
   return
 #
-# [END OF pluto_huggingface]
+# ----------[End of Pluto]----------
 #
-# [BEGIN OF pluto_foxy]
+# ----------[Begin of Foxy]----------
 #
 # prompt: write new class Pluto_FastAI inherent from Pluto_Happy with documentation
 # Note: 90% correct, the "init()" missing self and name parameter, and super() is wrong
 # and I add in new method say_tagline() just for fun
-
+import duckduckgo_search
+import IPython
+import opendatasets
+import graphviz
+import timm
+import json
+from fastai.callback.core import Callback
+#
 class Pluto_FastAI(Pluto_Happy):
   """
   A class that inherits from Pluto_Happy, and add FastAI functionality
@@ -1329,8 +1334,7 @@ class Pluto_FastAI(Pluto_Happy):
 
 # prompt: write documentation for the function fetch_image_url_online
 # Grade: A // it can document good.
-import duckduckgo_search
-import fastai
+
 
 # change name and imports to conform to Pluto standard
 @add_method(Pluto_FastAI)
@@ -1360,8 +1364,6 @@ def fetch_image_url_online(self,term):
 # prompt: write a function to display an image from a URL with documentation
 # Grade: B- // it works, but import is in function and not clean
 
-# Import the necessary libraries.
-import IPython
 @add_method(Pluto_FastAI)
 def draw_image_url(self, url, width=0):
 
@@ -1404,7 +1406,6 @@ def _fetch_one_image(self,url, directory, filename, is_display=False):
   Returns:
     None
   """
-
   try:
     # Download the image
     image_file = requests.get(url)
@@ -1495,7 +1496,7 @@ def fetch_images_from_search(self, term, directory,
 # Grade: C+ // The calculate of the indexes "ax" is wrong. I correct it. And it import numpy but not usig it.
 # Note 2: it could be not an image so add in try: except:
 
-import pathlib
+
 # display thumb images
 @add_method(Pluto_FastAI)
 def draw_thumb_images(self,dname, nrows=2, ncols=4):
@@ -1627,9 +1628,6 @@ def fix_non_image_files(self,directory):
 # prompt: write a function to create a pandas dataframe with two columns from directory of files, the first column is the full path and the second is the name of the file.
 # Grade: B // it works, but with some minor error, and I refactor the method because it is too messy.
 
-import pandas
-import pathlib
-
 # update to Pluto standard naming convention
 @add_method(Pluto_FastAI)
 def make_df_img_name(self, directory,label_fn=None):
@@ -1703,8 +1701,7 @@ def fix_resize_img_square(self, directory, img_size=512):
 # prompt: write a foxy function to download dataset from Kaggle website using opendatasets lib with documentation
 # Grade: B- // It works, but it failded at first many tried. So, I told it "opendatasets" lib.
 
-import opendatasets
-import os
+
 
 # Function to download dataset from Kaggle website using opendatasets lib.
 @add_method(Pluto_FastAI)
@@ -1739,8 +1736,6 @@ def fetch_kaggle_dataset(self,dataset_name, path_to_save):
 # prompt: update function draw_diagram() with the following: change the node font to san serif
 # prompt: 8 more updates prompts. (see #scratch Fun graph divergent section)
 # Grade: B // after two hours of fun divergent, I got this to work
-
-import graphviz
 
 @add_method(Pluto_FastAI)
 def draw_diagram(self, nodes, edges, labels, node_color=None, 
@@ -1955,10 +1950,7 @@ def draw_df_ylabel(self, df,y_label='label'):
 # prompt: write python detail inline documentation for the following function: make_step1_data_source
 # Grade: B // most of it correct
 
-import fastai
-from fastai.data.all import *
-from fastai.vision.all import *
-import torchvision
+
 @add_method(Pluto_FastAI)
 def make_step1_data_source(self, df, x_col_index=0, y_col_index=1,is_verbose=False):
 
@@ -2142,7 +2134,7 @@ def draw_fastai_train(self):
 # prompt: write a function with documentation for the following: print all the name begin with partial label, variable avail_pretrained_models
 # grade: A // it works
 
-import timm
+
 @add_method(Pluto_FastAI)
 def fetch_timm_models_name(partial_label):
 
@@ -2163,7 +2155,7 @@ def fetch_timm_models_name(partial_label):
   return models
 # 
 # prompt: Add in a parameter to print the result to a file with the same name as the notebook but with .py file extention
-import json
+
 @add_method(Pluto_FastAI)
 def fetch_code_cells(self, notebook_name, 
   filter_magic="# %%write", 
@@ -2214,7 +2206,6 @@ def fetch_code_cells(self, notebook_name,
 # Example usage:
 # print_code_cells_from_notebook('your_notebook_name_here.ipynb')
 # prompt: (from gpt4)
-from fastai.callback.core import Callback
 #
 class StopAndSaveOnLowError(Callback):
   def __init__(self, threshold=0.009, fname='best_low_error_model'):
@@ -2235,5 +2226,6 @@ class StopAndSaveOnLowError(Callback):
         raise CancelTrainException
     return
 #
-# END OF pluto_foxy
+# ----------[END OF pluto_foxy]----------
 #
+# ----------[END OF CODE]----------
