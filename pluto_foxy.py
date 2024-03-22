@@ -786,6 +786,7 @@ class Pluto_Happy(object):
     x = self.fetch_info_host_ip()
     print(x)
     self._ph()
+    self.make_key_environment()
     #
     return
   #
@@ -2209,6 +2210,30 @@ def fetch_code_cells(self, notebook_name,
 # Example usage:
 # print_code_cells_from_notebook('your_notebook_name_here.ipynb')
 # prompt: (from gpt4)
+#
+@add_method(Pluto_FastAI)
+def make_key_environment(self):
+  
+  """
+  Save all the keys in the environtment variable
+
+  Parameters:
+  - None
+
+  Returns:
+  - None: Writes the filtered code cells to a .py file or prints them based on the parameters.
+
+  Examples:
+  - retrive the var: key_github = os.environ['key_github'] 
+
+  """
+  os.environ['key_github'] = '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'
+  os.environ['key_crypt'] = 'fes_f8Im569hYnI1Tn6FqP-6hS4rdmNOJ6DWcRPOsvc='
+  os.environ['key_huggingface'] = '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'
+  os.environ['key_kaggle'] = 'da385977ed19700a9cb644cc67550fb1'
+  return
+#
+# -----------------------------------
 #
 class StopAndSaveOnLowError(Callback):
   def __init__(self, threshold=0.009, fname='best_low_error_model'):
