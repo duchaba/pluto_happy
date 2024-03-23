@@ -786,7 +786,7 @@ class Pluto_Happy(object):
     x = self.fetch_info_host_ip()
     print(x)
     self._ph()
-    self.make_key_environment()
+    # self.make_key_environment()
     #
     return
   #
