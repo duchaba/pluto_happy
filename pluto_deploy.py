@@ -108,7 +108,7 @@ class Pluto_Happy(object):
   #
  
   # Define a function to display available CPU and RAM
-  def fetch_info_system(self):
+  def fetch_info_system(self, is_print=False):
 
     """
     Fetches system information, such as CPU usage and memory usage.
@@ -129,6 +129,8 @@ class Pluto_Happy(object):
     mem_total_gb = mem.total / (1024 ** 3)
     mem_available_gb = mem.available / (1024 ** 3)
     mem_used_gb = mem.used / (1024 ** 3)
+    #
+    # print it nicely
     # save the results
     s += f"Total memory: {mem_total_gb:.2f} GB\n"
     s += f"Available memory: {mem_available_gb:.2f} GB\n"
@@ -140,6 +142,17 @@ class Pluto_Happy(object):
       s += f'Number of CPU cores: {cpu_info["count"]}\n'
       s += f"CPU usage: {cpu_usage}%\n"
       s += f'Python version: {cpu_info["python_version"]}'
+      if (is_print is True):
+        self._ph()
+        self._pp("System", "Info")
+        self._ph()
+        self._pp("Total Memory", f"{mem_total_gb:.2f} GB")
+        self._pp("Available Memory", f"{mem_available_gb:.2f} GB")
+        self._pp("Memory Usage", f"{mem_used_gb/mem_total_gb:.2f}%")
+        self._pp("CPU Type", f'{cpu_info["brand_raw"]}, arch: {cpu_info["arch"]}')
+        self._pp("CPU Cores Count", f'{cpu_info["count"]}')
+        self._pp("CPU Usage", f"{cpu_usage}%")
+        self._pp("Python Version", f'{cpu_info["python_version"]}')
     except Exception as e:
       s += f'CPU type: Not accessible, Error: {e}'
     return s
@@ -390,12 +403,10 @@ class Pluto_Happy(object):
     self._pp("For complete doc type", "help(pluto) ...or help(your_object_name)")
     self._pp('.','.')
     self._pp("...", "¯\_(ツ)_/¯")
-    self._ph()
     # system
-    self._pp('System', 'Info')
-    x = self.fetch_info_system()
-    print(x)
-    self._ph()
+    x = self.fetch_info_system(is_print=True)
+    # print(x)
+    # self._ph()
     # gpu
     self._pp('GPU', 'Info')
     x = self.fetch_info_gpu()
@@ -424,6 +435,45 @@ class Pluto_Happy(object):
     #
     return
   #
+  def check_ml_libraries(self):
+    """
+    Checks for the presence of Gradio, fastai, huggingface_hub, and transformers libraries.
+
+    Prints a message indicating whether each library is found or not.
+    If a library is not found, it prints an informative message specifying the missing library.
+    """
+    self._ph()
+    self._pp("ML Lib", "Info")
+    try:
+      import fastai
+      self._pp("fastai", {fastai.__version__})
+    except ImportError:
+      self._pp("fastai", "*Warning* library not found.")
+    #
+    try:
+      import transformers
+      self._pp("transformers", transformers.__version__)
+    except ImportError:
+      print("transformers:  *Warning* library not found.") 
+    #
+    try:
+      import diffusers
+      print(f"diffusers: {diffusers.__version__}")
+    except ImportError:
+      print("diffusers:  *Warning* library not found.") 
+    #
+    try:
+      import gradio
+      print(f"gradio: {gradio.__version__}")
+    except ImportError:
+      print("Gradio: *Warning* library not found.")
+
+    try:
+      import huggingface_hub
+      print(f"huggingface_hub: {huggingface_hub.__version__}")
+    except ImportError:
+      print("huggingface_hub:  *Warning* library not found.")
+    return
 # 
 # add module/method
 #
