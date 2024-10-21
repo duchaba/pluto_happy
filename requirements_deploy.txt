@@ -2,4 +2,4 @@ pynvml
 # most system have the following lib.
 matplotlib
 torch
-cpuinfo
+py-cpuinfo
