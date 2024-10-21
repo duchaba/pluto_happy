@@ -524,4 +524,8 @@ def add_method(cls):
   return decorator
 #
 # [END OF pluto_happy]
+if __name__ == "__main__":
+  hanna = Pluto_Happy('Hanna, the explorer and ranger.')
+  hanna.fname_requirements = 'requirements.txt'
+  hanna.print_info_self()
 #
