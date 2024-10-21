@@ -1,4 +1,6 @@
 # [BEGIN OF pluto_happy]
+# required pip install
+import pynvml # for GPU info
 ## standard libs, no need to install
 import json
 import time
@@ -16,7 +18,6 @@ import numpy
 import importlib.metadata
 import types
 import cpuinfo
-import pynvml
 import pathlib
 import re
 # define class Pluto_Happy
