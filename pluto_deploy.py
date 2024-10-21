@@ -6,6 +6,7 @@ import numpy
 import PIL
 import pandas
 import matplotlib
+import torch
 # standard libs (system)
 import json
 import time
