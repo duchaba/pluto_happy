@@ -208,6 +208,7 @@ class Pluto_Happy(object):
     except Exception as e:
       s += f'**Warning, No GPU: {e}'
       if (is_print is True):
+        self._ph()
         self._pp("GPU", f"*Warning* No GPU: {e}")
     return s
   #
@@ -442,7 +443,7 @@ class Pluto_Happy(object):
     # print(x)
     # self._ph()
     # gpu
-    self._pp('GPU', 'Info')
+    # self._pp('GPU', 'Info')
     x = self.fetch_info_gpu(is_print=True)
     # print(x)
     self._ph()
@@ -493,7 +494,7 @@ class Pluto_Happy(object):
     #
     try:
       import diffusers
-      self._pp(f"diffusers: {diffusers.__version__}")
+      self._pp("diffusers", f"{diffusers.__version__}")
     except ImportError:
       self._pp("diffusers",  "*Warning* library not found.") 
     #
