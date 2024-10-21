@@ -158,7 +158,6 @@ class Pluto_Happy(object):
       if (is_print is True):
         self._ph()
         self._pp("CPU", f"*Warning* No CPU Access: {e}")
-        self._ph()
     return s
   #
   # fetch GPU RAM info
@@ -209,9 +208,7 @@ class Pluto_Happy(object):
     except Exception as e:
       s += f'**Warning, No GPU: {e}'
       if (is_print is True):
-        self._ph()
         self._pp("GPU", f"*Warning* No GPU: {e}")
-        self._ph()
     return s
   #
   # fetch info about host ip
@@ -492,25 +489,25 @@ class Pluto_Happy(object):
       import transformers
       self._pp("transformers", transformers.__version__)
     except ImportError:
-      print("transformers:  *Warning* library not found.") 
+      self._pp("transformers", "*Warning* library not found.") 
     #
     try:
       import diffusers
-      print(f"diffusers: {diffusers.__version__}")
+      self._pp(f"diffusers: {diffusers.__version__}")
     except ImportError:
-      print("diffusers:  *Warning* library not found.") 
+      self._pp("diffusers",  "*Warning* library not found.") 
     #
     try:
       import gradio
-      print(f"gradio: {gradio.__version__}")
+      self._pp("gradio", f"{gradio.__version__}")
     except ImportError:
-      print("Gradio: *Warning* library not found.")
+      self._pp("Gradio", "*Warning* library not found.")
 
     try:
       import huggingface_hub
-      print(f"huggingface_hub: {huggingface_hub.__version__}")
+      self._pp("HuggingFace Hub", f"{huggingface_hub.__version__}")
     except ImportError:
-      print("huggingface_hub:  *Warning* library not found.")
+      self._pp("huggingface_hub", "*Warning* library not found.")
     return
 # 
 # add module/method
