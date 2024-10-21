@@ -249,7 +249,7 @@ class Pluto_Happy(object):
           self._pp("Jupyter Notebook ", "Not accessible")
     except Exception as e:
       s += f"**Warning, No hostname: {e}"
-      if (is_print is True)
+      if (is_print is True):
         self._ph()
         self._pp('Host Name and Notebook', 'Not accessible')
     return s
