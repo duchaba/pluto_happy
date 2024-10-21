@@ -155,10 +155,14 @@ class Pluto_Happy(object):
         self._pp("Python Version", f'{cpu_info["python_version"]}')
     except Exception as e:
       s += f'CPU type: Not accessible, Error: {e}'
+      if (is_print is True):
+        self._ph()
+        self._pp("CPU", f"*Warning* No CPU Access: {e}")
+        self._ph()
     return s
   #
   # fetch GPU RAM info
-  def fetch_info_gpu(self):
+  def fetch_info_gpu(self, is_print=False):
 
     """
     Function to fetch GPU RAM info
@@ -191,12 +195,27 @@ class Pluto_Happy(object):
       s += f'Free Memory: {mfree:.2f} GB\n'
       s += f'GPU allocated RAM: {round(torch.cuda.memory_allocated(0)/1024**3,2)} GB\n'
       s += f'GPU reserved RAM {round(torch.cuda.memory_reserved(0)/1024**3,2)} GB\n'
+      if (is_print is True):
+        self._ph()
+        self._pp("GPU", "Info")
+        self._ph()
+        self._pp("GPU Type", f'{torch.cuda.get_device_name(0)}')
+        self._pp("GPU Ready Status", f'{torch.cuda.is_available()}')
+        self._pp("GPU Count", f'{devices}')
+        self._pp("GPU Total Memory", f'{mtotal:.2f} GB')
+        self._pp("GPU Free Memory", f'{mfree:.2f} GB')
+        self._pp("GPU allocated RAM", f'{round(torch.cuda.memory_allocated(0)/1024**3,2)} GB')
+        self._pp("GPU reserved RAM", f'{round(torch.cuda.memory_reserved(0)/1024**3,2)} GB')
     except Exception as e:
       s += f'**Warning, No GPU: {e}'
+      if (is_print is True):
+        self._ph()
+        self._pp("GPU", f"*Warning* No GPU: {e}")
+        self._ph()
     return s
   #
   # fetch info about host ip
-  def fetch_info_host_ip(self):
+  def fetch_info_host_ip(self, is_print=True):
     """
     Function to fetch current host name and ip address
 
@@ -212,8 +231,27 @@ class Pluto_Happy(object):
       ip_address = socket.gethostbyname(hostname)
       s += f"Hostname: {hostname}\n"
       s += f"IP Address: {ip_address}\n"
+      if (is_print is True):
+        self._ph()
+        self._pp('Host and Notebook', 'Info')
+        self._ph()
+        self._pp('Host Name', f"{hostname}")
+        self._pp("IP Address", f"{ip_address}")
+        try:
+          from jupyter_server import serverapp 
+          self._pp("Jupyter Server", f'{serverapp.__version__}')
+        except ImportError:
+          self._pp("Jupyter Server", "Not accessible")
+        try:
+          import notebook 
+          self._pp("Jupyter Notebook", f'{notebook.__version__}')
+        except ImportError:
+          self._pp("Jupyter Notebook ", "Not accessible")
     except Exception as e:
       s += f"**Warning, No hostname: {e}"
+      if (is_print is True)
+        self._ph()
+        self._pp('Host Name and Notebook', 'Not accessible')
     return s
   #
   #
@@ -400,17 +438,16 @@ class Pluto_Happy(object):
     self._ph()
     self._pp("Hello, I am", self.name)
     self._pp("I will display", "Python, Jupyter, and system info.")
-    self._pp("For complete doc type", "help(pluto) ...or help(your_object_name)")
-    self._pp('.','.')
-    self._pp("...", "¯\_(ツ)_/¯")
+    self._pp("Note", "For doc type: help(pluto) ...or help(your_object_name)")
+    self._pp("Let Rock and Roll", "¯\_(ツ)_/¯")
     # system
     x = self.fetch_info_system(is_print=True)
     # print(x)
     # self._ph()
     # gpu
     self._pp('GPU', 'Info')
-    x = self.fetch_info_gpu()
-    print(x)
+    x = self.fetch_info_gpu(is_print=True)
+    # print(x)
     self._ph()
     # lib used
     self._pp('Installed lib from', self.fname_requirements)
@@ -418,6 +455,7 @@ class Pluto_Happy(object):
     x = self.fetch_match_file_dict(self.fname_requirements, self.fetch_installed_libraries())
     for item, value in x.items():
       self._pp(f'{item} version', value)
+    #
     self._ph()
     self._pp('Standard lib from', 'System')
     self._ph()
@@ -426,16 +464,16 @@ class Pluto_Happy(object):
     self._pp('pandas version',pandas.__version__)
     self._pp('PIL version', PIL.__version__)
     self._pp('torch version', torch.__version__)
-    self._ph()
+    #
+    self.print_ml_libraries()
     # host ip
-    self._pp('Host', 'Info')
     x = self.fetch_info_host_ip()
-    print(x)
+    # print(x)
     self._ph()
     #
     return
   #
-  def check_ml_libraries(self):
+  def print_ml_libraries(self):
     """
     Checks for the presence of Gradio, fastai, huggingface_hub, and transformers libraries.
 
