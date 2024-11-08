@@ -510,7 +510,20 @@ class Pluto_Happy(object):
     except ImportError:
       self._pp("huggingface_hub", "*Warning* library not found.")
     return
-# 
+  # 
+  import hashlib
+  def generate_hash(self, text, max_length=8):
+    """Generates an x-length hash for a given string."""
+    hash_object = hashlib.md5(text.encode())
+    hash_hex = hash_object.hexdigest()
+    return hash_hex[:max_length]
+  #
+  def is_system_verified():
+    if (generate_hash(os.environ['huggingface_key']) == '15d797fe'):
+      return (True)
+    else:
+      return (False)
+  #
 # add module/method
 #
 import functools
