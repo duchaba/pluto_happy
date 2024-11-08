@@ -511,6 +511,48 @@ class Pluto_Happy(object):
       self._pp("huggingface_hub", "*Warning* library not found.")
     return
   # 
+  def print_learner_meta_info(self, learner):
+    """
+      Print all the leaner meta data and more.
+
+      Args: None
+
+      Return: None
+    """
+    self._ph()
+    self._pp("Name", learner._meta_project_name)
+    self._ph()
+    self._pp("Error_rate", learner._meta_error_rate)
+    self._pp("Base Model", learner._meta_base_model_name)
+    self._pp("Data Source", learner._meta_data_source)
+    self._pp("Data Info", learner._meta_data_info)
+    try:
+      t = time.strftime('%Y-%b-%d %H:%M:%S %p', time.gmtime(learner._meta_training_unix_time))
+    except Exception as e:
+      t = learner._meta_training_unix_time
+    self._pp("Time Stamp", t)
+    # self._pp("Time Stamp", learner._meta_training_unix_time)
+    self._pp("Learning Rate", learner.lr)
+    self._pp("Base Learning Rate", learner._meta_base_lr)
+    self._pp("Batch Size", learner.dls.bs)
+    self._pp("Momentum", learner.moms)
+    self._pp("AI Dev Stack", learner._meta_ai_dev_stack)
+    self._pp("Learner Vocab", learner.dls.vocab)
+    self._pp("Learner Vocab Size", len(learner.dls.vocab))
+    #
+    self._ph()
+    self._pp("Author", learner._meta_author)
+    self._pp("AI Assistant", learner._meta_ai_assistant)
+    self._pp("GenAI Coder", learner._meta_genai)
+    self._pp("[Friends] Human Coder", learner._meta_human_coder)
+    self._pp("License", learner._meta_license)
+    #
+    self._ph()
+    self._pp("Conclusion", learner._meta_notes)
+    self._ph()
+    return
+  # 
+  #
   import hashlib
   def generate_hash(self, text, max_length=8):
     """Generates an x-length hash for a given string."""
