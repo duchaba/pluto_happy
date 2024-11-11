@@ -560,8 +560,8 @@ class Pluto_Happy(object):
     hash_hex = hash_object.hexdigest()
     return hash_hex[:max_length]
   #
-  def is_system_verified():
-    if (generate_hash(os.environ['huggingface_key']) == '15d797fe'):
+  def is_system_verified(self):
+    if (self.generate_hash(os.environ['huggingface_key']) == '15d797fe'):
       return (True)
     else:
       return (False)
